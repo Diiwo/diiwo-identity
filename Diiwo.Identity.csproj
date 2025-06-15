@@ -1,0 +1,140 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <PackageId>Diiwo.Identity</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Diiwo</Authors>
+    <Description>Dual-architecture user management and authentication library for Diiwo applications. Choose between App (simple) or AspNet (enterprise) architectures.</Description>
+    <PackageTags>diiwo;identity;authentication;users;roles;permissions;app;aspnet;enterprise</PackageTags>
+    <RepositoryUrl>https://github.com/diiwo/diiwo-identity</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReleaseNotes>
+      Version 0.1.0 - Initial Release:
+      - Complete dual-architecture implementation
+      - App architecture: Simple, standalone identity management
+      - AspNet architecture: Enterprise features with ASP.NET Core Identity integration
+      - 5-level permission system in both architectures
+      - Clean namespace separation: Diiwo.Identity.App vs Diiwo.Identity.AspNet
+      - Optional foreign key relationships between architectures
+      - Comprehensive documentation and examples
+    </PackageReleaseNotes>
+  </PropertyGroup>
+
+  <!-- NEW DUAL ARCHITECTURE STRUCTURE -->
+  <!-- Files are included automatically by .NET SDK -->
+
+  <!-- Package Dependencies -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+    
+    <!-- ASP.NET Core Identity (for AspNet architecture) -->
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.0" />
+    
+    <!-- Password hashing (for App architecture) -->
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    
+    <!-- Logging and DI abstractions -->
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+  </ItemGroup>
+
+  <!-- LEGACY FILES - EXCLUDED FOR CLEAN MIGRATION -->
+  <ItemGroup Label="Legacy Files - Excluded during refactoring">
+    <!-- Old Domain/Enterprise structure -->
+    <Compile Remove="Domain\**\*.cs" />
+    <Compile Remove="Enterprise\**\*.cs" />
+    <Compile Remove="Extensions\IdentityServiceExtensions.cs" />
+    <Compile Remove="Infrastructure\Persistence\IdentityDbContext.cs" />
+    
+    <!-- Test and example files (temporarily excluded) -->
+    <Compile Remove="Tests\**\*.cs" />
+    <Compile Remove="DIIWO.Identity.Tests\**\*.cs" />
+    <Compile Remove="Examples\**\*.cs" />
+    <Compile Remove="TestWebApi\**\*.cs" />
+    <Compile Remove="TestConsole\**\*.cs" />
+    
+    <!-- Old service files (replaced by new architecture) -->
+    <Compile Remove="Application\Services\Permissions\PermissionValidationService.cs" />
+    <Compile Remove="Application\Services\Permissions\PermissionManagementService.cs" />
+    <Compile Remove="Application\Services\Permissions\PermissionFacadeService.cs" />
+    <Compile Remove="Application\Services\Permissions\PermissionCacheService.cs" />
+    <Compile Remove="Application\Services\Users\CurrentUserService.cs" />
+    <Compile Remove="Application\Services\UserManagementService.cs" />
+    <Compile Remove="Application\Contracts\IPermissionService.cs" />
+    <Compile Remove="Application\Contracts\IPermissionManagementService.cs" />
+    <Compile Remove="Application\Contracts\IPermissionValidationService.cs" />
+    
+    <!-- Keep legacy files as content for reference -->
+    <None Include="Domain\**\*.cs" />
+    <None Include="Enterprise\**\*.cs" />
+    <None Include="Tests\**\*.cs" />
+    <None Include="DIIWO.Identity.Tests\**\*.cs" />
+    <None Include="Examples\**\*.cs" />
+    <None Include="TestWebApi\**\*.cs" />
+    <None Include="TestConsole\**\*.cs" />
+  </ItemGroup>
+
+  <!-- Documentation and Examples (Include as content) -->
+  <ItemGroup Label="Documentation">
+    <None Include="README.md" />
+    <None Include="ARCHITECTURE-CHOICE.md" />
+    <None Include="IMPLEMENTATION-GUIDE.md" />
+    <None Include="SOLUTION-SUMMARY.md" />
+    <Content Include="Examples\**\*.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <!-- Diiwo.Core Reference - Base entities and universal functionality -->
+  <ItemGroup>
+    <ProjectReference Include="..\DIIWO-Core\DIIWO.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Build Configuration -->
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DefineConstants>TRACE</DefineConstants>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <!-- Assembly Information -->
+  <PropertyGroup>
+    <AssemblyTitle>Diiwo.Identity - Dual Architecture Identity Management</AssemblyTitle>
+    <AssemblyDescription>Choose between App (simple) or AspNet (enterprise) identity architectures for your needs.</AssemblyDescription>
+    <AssemblyCompany>Diiwo</AssemblyCompany>
+    <AssemblyProduct>Diiwo.Identity</AssemblyProduct>
+    <AssemblyCopyright>Copyright © Diiwo 2024</AssemblyCopyright>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+  </PropertyGroup>
+
+  <!-- Build Targets -->
+  <Target Name="PrintArchitectureInfo" BeforeTargets="Build">
+    <Message Text="Building Diiwo.Identity v0.1.0 - Dual Architecture" Importance="high" />
+    <Message Text="   App Architecture: Simple, standalone identity management" Importance="high" />
+    <Message Text="   AspNet Architecture: Enterprise with ASP.NET Core Identity" Importance="high" />
+    <Message Text="   Choose your architecture in your Program.cs:" Importance="high" />
+    <Message Text="      - services.AddAppIdentity() for simple projects" Importance="high" />
+    <Message Text="      - services.AddAspNetIdentity() for enterprise projects" Importance="high" />
+  </Target>
+
+</Project>

@@ -1,0 +1,57 @@
+# .NET Core / .NET Framework
+bin/
+obj/
+out/
+build/
+publish/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio
+.vs/
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+TestResult.xml
+nunit-*.xml
+
+# NuGet packages
+packages/
+*.nupkg
+*.snupkg
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Database files
+*.db
+*.sqlite
+*.mdf
+*.ldf
+
+# Logs
+*.log
+logs/
+
+# OS generated files
+.DS_Store
+Thumbs.db
