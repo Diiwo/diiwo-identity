@@ -4,7 +4,7 @@ using Diiwo.Core.Domain.Entities;
 namespace Diiwo.Identity.App.Entities;
 
 /// <summary>
-/// 🟢 APP ARCHITECTURE - Simple role entity
+/// APP ARCHITECTURE - Simple role entity
 /// Basic role definition for simple projects
 /// </summary>
 public class AppRole : UserTrackedEntity
@@ -15,8 +15,6 @@ public class AppRole : UserTrackedEntity
 
     [StringLength(255)]
     public string? Description { get; set; }
-
-    // Note: IsActive, CreatedAt, UpdatedAt, CreatedBy, UpdatedBy now come from UserTrackedEntity
 
     // Navigation properties
     public virtual ICollection<AppRolePermission> RolePermissions { get; set; } = new List<AppRolePermission>();

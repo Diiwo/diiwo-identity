@@ -60,8 +60,6 @@ public class AppUser : UserTrackedEntity
 
     public string? TwoFactorSecret { get; set; }
 
-    // Note: IsActive, CreatedAt, UpdatedAt, CreatedBy, UpdatedBy now come from UserTrackedEntity
-
     // Navigation properties
     public virtual ICollection<AppUserSession> UserSessions { get; set; } = new List<AppUserSession>();
     public virtual ICollection<AppUserLoginHistory> LoginHistory { get; set; } = new List<AppUserLoginHistory>();

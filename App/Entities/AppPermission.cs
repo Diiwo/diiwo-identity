@@ -5,7 +5,7 @@ using Diiwo.Identity.Shared.Enums;
 namespace Diiwo.Identity.App.Entities;
 
 /// <summary>
-///  APP ARCHITECTURE - Permission definition entity
+/// APP ARCHITECTURE - Permission definition entity
 /// Defines what actions can be performed on what resources
 /// Part of the 5-level permission system
 /// </summary>

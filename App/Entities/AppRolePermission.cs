@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations;
 namespace Diiwo.Identity.App.Entities;
 
 /// <summary>
-///  Level 1: Role-based permissions (Priority 0 - Highest)
+/// Level 1: Role-based permissions (Priority 0 - Highest)
+/// Assigns permissions directly to roles in the 5-level permission system
 /// </summary>
 public class AppRolePermission
 {

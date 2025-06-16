@@ -4,7 +4,7 @@ using Diiwo.Core.Domain.Entities;
 namespace Diiwo.Identity.App.Entities;
 
 /// <summary>
-/// 🟢 APP ARCHITECTURE - User group entity
+/// APP ARCHITECTURE - User group entity
 /// Allows grouping users for easier permission management
 /// Part of the 5-level permission system (Level 2)
 /// </summary>
@@ -16,8 +16,6 @@ public class AppGroup : UserTrackedEntity
 
     [StringLength(255)]
     public string? Description { get; set; }
-
-    // Note: IsActive, CreatedAt, UpdatedAt, CreatedBy, UpdatedBy now come from UserTrackedEntity
 
     // Navigation properties
     public virtual ICollection<AppUser> Users { get; set; } = new List<AppUser>();
