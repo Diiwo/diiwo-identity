@@ -23,8 +23,9 @@ public class AppGroup : UserTrackedEntity
 
     /// <summary>
     /// Get all permissions granted to this group
+    /// This is a computed property, not a navigation property
     /// </summary>
-    public IEnumerable<AppPermission> Permissions => GroupPermissions
+    public IEnumerable<AppPermission> GetGrantedPermissions() => GroupPermissions
         .Where(gp => gp.IsGranted)
         .Select(gp => gp.Permission);
 }
