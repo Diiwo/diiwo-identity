@@ -9,7 +9,8 @@ using Diiwo.Identity.Shared.Enums;
 namespace App.Tests.Services;
 
 /// <summary>
-/// Tests for AppUserService
+/// Test suite for AppUserService
+/// Validates user management operations, authentication logic, and business rules
 /// </summary>
 [TestClass]
 public class AppUserServiceTests
@@ -36,6 +37,14 @@ public class AppUserServiceTests
         _context.Dispose();
     }
 
+    /// <summary>
+    /// Test Case: User Retrieval by ID
+    /// Description: Verifies that users can be successfully retrieved by their unique identifier
+    /// Acceptance Criteria:
+    /// - Valid user ID should return the corresponding user
+    /// - All user properties should be correctly loaded
+    /// - Service should handle database queries efficiently
+    /// </summary>
     [TestMethod]
     public async Task GetUserByIdAsync_WithValidId_ReturnsUser()
     {
@@ -57,6 +66,14 @@ public class AppUserServiceTests
         Assert.AreEqual("test@example.com", result.Email);
     }
 
+    /// <summary>
+    /// Test Case: Invalid User ID Handling
+    /// Description: Verifies that service handles non-existent user IDs gracefully
+    /// Acceptance Criteria:
+    /// - Non-existent user ID should return null
+    /// - Service should not throw exceptions for invalid IDs
+    /// - Database queries should be optimized for non-existent records
+    /// </summary>
     [TestMethod]
     public async Task GetUserByIdAsync_WithInvalidId_ReturnsNull()
     {
@@ -67,6 +84,14 @@ public class AppUserServiceTests
         Assert.IsNull(result);
     }
 
+    /// <summary>
+    /// Test Case: User Retrieval by Email
+    /// Description: Verifies that users can be found using their email address
+    /// Acceptance Criteria:
+    /// - Valid email should return the corresponding user
+    /// - Email lookup should be case-insensitive or consistent
+    /// - Service should handle email-based queries efficiently
+    /// </summary>
     [TestMethod]
     public async Task GetUserByEmailAsync_WithValidEmail_ReturnsUser()
     {
@@ -87,6 +112,14 @@ public class AppUserServiceTests
         Assert.AreEqual("test@example.com", result.Email);
     }
 
+    /// <summary>
+    /// Test Case: Invalid Email Handling
+    /// Description: Verifies that service handles non-existent email addresses gracefully
+    /// Acceptance Criteria:
+    /// - Non-existent email should return null
+    /// - Service should not throw exceptions for invalid emails
+    /// - Email validation should be consistent with business rules
+    /// </summary>
     [TestMethod]
     public async Task GetUserByEmailAsync_WithInvalidEmail_ReturnsNull()
     {
@@ -97,6 +130,15 @@ public class AppUserServiceTests
         Assert.IsNull(result);
     }
 
+    /// <summary>
+    /// Test Case: User Creation with Valid Data
+    /// Description: Verifies that new users can be created with proper validation and defaults
+    /// Acceptance Criteria:
+    /// - User should be created with provided information
+    /// - Default values should be applied correctly
+    /// - User should be persisted to database
+    /// - Business rules should be enforced during creation
+    /// </summary>
     [TestMethod]
     public async Task CreateUserAsync_WithValidData_CreatesUser()
     {
@@ -118,6 +160,15 @@ public class AppUserServiceTests
         Assert.IsNotNull(userInDb);
     }
 
+    /// <summary>
+    /// Test Case: User Information Update
+    /// Description: Verifies that existing user information can be modified correctly
+    /// Acceptance Criteria:
+    /// - User properties should be updated with new values
+    /// - Changes should be persisted to database
+    /// - Audit fields should be maintained properly
+    /// - Business rules should be validated during updates
+    /// </summary>
     [TestMethod]
     public async Task UpdateUserAsync_WithValidUser_UpdatesUser()
     {

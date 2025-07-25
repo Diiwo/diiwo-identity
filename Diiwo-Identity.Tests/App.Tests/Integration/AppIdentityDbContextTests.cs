@@ -6,7 +6,8 @@ using Diiwo.Identity.Shared.Enums;
 namespace App.Tests.Integration;
 
 /// <summary>
-/// Integration tests for AppIdentityDbContext
+/// Test suite for AppIdentityDbContext integration
+/// Validates database operations, entity relationships, and data seeding
 /// </summary>
 [TestClass]
 public class AppIdentityDbContextTests
@@ -30,6 +31,14 @@ public class AppIdentityDbContextTests
         _context.Dispose();
     }
 
+    /// <summary>
+    /// Test Case: Database User CRUD Operations
+    /// Description: Verifies that users can be created, saved, and retrieved from the database
+    /// Acceptance Criteria:
+    /// - User should be successfully persisted to database
+    /// - Retrieved user should match saved user properties
+    /// - All user fields should be correctly stored and retrieved
+    /// </summary>
     [TestMethod]
     public async Task CanCreateAndRetrieveUser()
     {
@@ -55,6 +64,15 @@ public class AppIdentityDbContextTests
         Assert.AreEqual("Test", retrievedUser.LastName);
     }
 
+    /// <summary>
+    /// Test Case: Permission System Integration
+    /// Description: Verifies that complex permission relationships can be established and maintained
+    /// Acceptance Criteria:
+    /// - Permissions should be correctly associated with roles
+    /// - Users should be correctly associated with roles
+    /// - Navigation properties should work correctly
+    /// - All relationships should be properly persisted
+    /// </summary>
     [TestMethod]
     public async Task CanCreatePermissionHierarchy()
     {
@@ -155,6 +173,14 @@ public class AppIdentityDbContextTests
         Assert.IsTrue(retrievedUserPermission.IsGranted);
     }
 
+    /// <summary>
+    /// Test Case: User Session Management Integration
+    /// Description: Verifies that user sessions can be created and properly associated with users
+    /// Acceptance Criteria:
+    /// - Sessions should be correctly linked to users
+    /// - Session data should be persisted correctly
+    /// - Navigation properties should work for user-session relationships
+    /// </summary>
     [TestMethod]
     public async Task CanCreateUserSession()
     {
@@ -195,6 +221,14 @@ public class AppIdentityDbContextTests
         Assert.IsTrue(retrievedSession.IsValid);
     }
 
+    /// <summary>
+    /// Test Case: Login History Tracking Integration
+    /// Description: Verifies that login history records can be created and associated with users
+    /// Acceptance Criteria:
+    /// - Login history should be correctly linked to users
+    /// - Authentication method and attempt details should be stored
+    /// - Successful and failed login attempts should be tracked properly
+    /// </summary>
     [TestMethod]
     public async Task CanCreateLoginHistory()
     {

@@ -9,7 +9,8 @@ using Diiwo.Identity.Shared.Enums;
 namespace App.Tests.Services;
 
 /// <summary>
-/// Tests for AppPermissionService
+/// Test suite for AppPermissionService
+/// Validates permission management operations, authorization logic, and business rules
 /// </summary>
 [TestClass]
 public class AppPermissionServiceTests
@@ -36,6 +37,14 @@ public class AppPermissionServiceTests
         _context.Dispose();
     }
 
+    /// <summary>
+    /// Test Case: Direct User Permission Authorization
+    /// Description: Verifies that users with direct permissions are correctly authorized
+    /// Acceptance Criteria:
+    /// - User should be granted access when they have direct permission
+    /// - Permission check should return true for granted permissions
+    /// - Permission scope and priority should be respected
+    /// </summary>
     [TestMethod]
     public async Task UserHasPermissionAsync_WithDirectUserPermission_ReturnsTrue()
     {
@@ -73,6 +82,14 @@ public class AppPermissionServiceTests
         Assert.IsTrue(result);
     }
 
+    /// <summary>
+    /// Test Case: Unauthorized Access Prevention
+    /// Description: Verifies that users without permissions are correctly denied access
+    /// Acceptance Criteria:
+    /// - User should be denied access when they lack required permissions
+    /// - Permission check should return false for unauthorized requests
+    /// - System should handle non-existent permissions gracefully
+    /// </summary>
     [TestMethod]
     public async Task UserHasPermissionAsync_WithoutPermission_ReturnsFalse()
     {
@@ -92,6 +109,14 @@ public class AppPermissionServiceTests
         Assert.IsFalse(result);
     }
 
+    /// <summary>
+    /// Test Case: Group-based Permission Authorization
+    /// Description: Verifies that users inherit permissions from their group memberships
+    /// Acceptance Criteria:
+    /// - User should inherit permissions from groups they belong to
+    /// - Group permission priorities should be respected
+    /// - Permission inheritance should work correctly across group hierarchies
+    /// </summary>
     [TestMethod]
     public async Task UserHasPermissionAsync_WithGroupPermission_ReturnsTrue()
     {
