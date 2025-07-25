@@ -8,7 +8,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageId>Diiwo.Identity</PackageId>
     <Version>0.1.0</Version>
-    <Authors>Diiwo</Authors>
+    <Authors>Joaquin Lugo Zavala</Authors>
     <Description>Dual-architecture user management and authentication library for Diiwo applications. Choose between App (simple) or AspNet (enterprise) architectures.</Description>
     <PackageTags>diiwo;identity;authentication;users;roles;permissions;app;aspnet;enterprise</PackageTags>
     <RepositoryUrl>https://github.com/diiwo/diiwo-identity</RepositoryUrl>
@@ -59,7 +59,7 @@
     <Compile Remove="Extensions\IdentityServiceExtensions.cs" />
     <Compile Remove="Infrastructure\Persistence\IdentityDbContext.cs" />
     
-    <!-- Test and example files (temporarily excluded) -->
+    <!-- Test and example files (excluded - now separate projects) -->
     <Compile Remove="Tests\**\*.cs" />
     <Compile Remove="DIIWO.Identity.Tests\**\*.cs" />
     <Compile Remove="Examples\**\*.cs" />
@@ -80,7 +80,6 @@
     <!-- Keep legacy files as content for reference -->
     <None Include="Domain\**\*.cs" />
     <None Include="Enterprise\**\*.cs" />
-    <None Include="Tests\**\*.cs" />
     <None Include="DIIWO.Identity.Tests\**\*.cs" />
     <None Include="Examples\**\*.cs" />
     <None Include="TestWebApi\**\*.cs" />
@@ -120,9 +119,9 @@
   <PropertyGroup>
     <AssemblyTitle>Diiwo.Identity - Dual Architecture Identity Management</AssemblyTitle>
     <AssemblyDescription>Choose between App (simple) or AspNet (enterprise) identity architectures for your needs.</AssemblyDescription>
-    <AssemblyCompany>Diiwo</AssemblyCompany>
+    <AssemblyCompany>Joaquin Lugo Zavala (Diiwo Org)</AssemblyCompany>
     <AssemblyProduct>Diiwo.Identity</AssemblyProduct>
-    <AssemblyCopyright>Copyright © Diiwo 2024</AssemblyCopyright>
+    <AssemblyCopyright>Copyright © Joaquin Lugo Zavala 2024-2025</AssemblyCopyright>
     <AssemblyVersion>0.1.0.0</AssemblyVersion>
     <FileVersion>0.1.0.0</FileVersion>
   </PropertyGroup>
