@@ -79,7 +79,7 @@ public class AppPermissionServiceTests
         var result = await _permissionService.UserHasPermissionAsync(user.Id, "Document", "Read");
 
         // Assert
-        Assert.IsTrue(result);
+        Assert.IsTrue(result, "User should have permission when directly granted");
     }
 
     /// <summary>
@@ -106,7 +106,7 @@ public class AppPermissionServiceTests
         var result = await _permissionService.UserHasPermissionAsync(user.Id, "Document", "Read");
 
         // Assert
-        Assert.IsFalse(result);
+        Assert.IsFalse(result, "User should not have permission when not granted");
     }
 
     /// <summary>
@@ -161,7 +161,7 @@ public class AppPermissionServiceTests
         var result = await _permissionService.UserHasPermissionAsync(user.Id, "Admin", "Access");
 
         // Assert
-        Assert.IsTrue(result);
+        Assert.IsTrue(result, "User should inherit permission from group membership");
     }
 
     [TestMethod]

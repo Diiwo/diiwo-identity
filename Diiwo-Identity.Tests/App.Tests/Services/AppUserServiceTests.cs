@@ -61,9 +61,9 @@ public class AppUserServiceTests
         var result = await _userService.GetUserByIdAsync(user.Id);
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(user.Id, result.Id);
-        Assert.AreEqual("test@example.com", result.Email);
+        Assert.IsNotNull(result, "User should be successfully retrieved by ID");
+        Assert.AreEqual(user.Id, result.Id, "Retrieved user should have matching ID");
+        Assert.AreEqual("test@example.com", result.Email, "Retrieved user should have correct email");
     }
 
     /// <summary>
@@ -81,7 +81,7 @@ public class AppUserServiceTests
         var result = await _userService.GetUserByIdAsync(Guid.NewGuid());
 
         // Assert
-        Assert.IsNull(result);
+        Assert.IsNull(result, "Non-existent user ID should return null");
     }
 
     /// <summary>
@@ -108,8 +108,8 @@ public class AppUserServiceTests
         var result = await _userService.GetUserByEmailAsync("test@example.com");
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual("test@example.com", result.Email);
+        Assert.IsNotNull(result, "User should be successfully retrieved by email");
+        Assert.AreEqual("test@example.com", result.Email, "Retrieved user should have correct email");
     }
 
     /// <summary>
@@ -127,7 +127,7 @@ public class AppUserServiceTests
         var result = await _userService.GetUserByEmailAsync("notfound@example.com");
 
         // Assert
-        Assert.IsNull(result);
+        Assert.IsNull(result, "Non-existent email should return null");
     }
 
     /// <summary>
@@ -150,14 +150,14 @@ public class AppUserServiceTests
             "Doe");
 
         // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual("newuser@example.com", result.Email);
-        Assert.AreEqual("John", result.FirstName);
-        Assert.AreEqual("Doe", result.LastName);
-        Assert.IsTrue(result.IsActive);
+        Assert.IsNotNull(result, "User should be successfully created");
+        Assert.AreEqual("newuser@example.com", result.Email, "Created user should have correct email");
+        Assert.AreEqual("John", result.FirstName, "Created user should have correct first name");
+        Assert.AreEqual("Doe", result.LastName, "Created user should have correct last name");
+        Assert.IsTrue(result.IsActive, "New users should be active by default");
 
         var userInDb = await _context.Users.FindAsync(result.Id);
-        Assert.IsNotNull(userInDb);
+        Assert.IsNotNull(userInDb, "User should be persisted to database");
     }
 
     /// <summary>

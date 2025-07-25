@@ -58,10 +58,10 @@ public class AppIdentityDbContextTests
         var retrievedUser = await _context.Users.FindAsync(user.Id);
 
         // Assert
-        Assert.IsNotNull(retrievedUser);
-        Assert.AreEqual("integration@example.com", retrievedUser.Email);
-        Assert.AreEqual("Integration", retrievedUser.FirstName);
-        Assert.AreEqual("Test", retrievedUser.LastName);
+        Assert.IsNotNull(retrievedUser, "User should be successfully retrieved from database");
+        Assert.AreEqual("integration@example.com", retrievedUser.Email, "Email should be correctly persisted");
+        Assert.AreEqual("Integration", retrievedUser.FirstName, "FirstName should be correctly stored");
+        Assert.AreEqual("Test", retrievedUser.LastName, "LastName should be correctly stored");
     }
 
     /// <summary>
@@ -160,17 +160,17 @@ public class AppIdentityDbContextTests
             .Include(up => up.Permission)
             .FirstOrDefaultAsync(up => up.UserId == user.Id);
 
-        Assert.IsNotNull(retrievedRolePermission);
-        Assert.AreEqual("TestRole", retrievedRolePermission.Role.Name);
-        Assert.AreEqual("TestResource", retrievedRolePermission.Permission.Resource);
+        Assert.IsNotNull(retrievedRolePermission, "Role permission should be successfully created and retrieved");
+        Assert.AreEqual("TestRole", retrievedRolePermission.Role.Name, "Role name should be correctly associated");
+        Assert.AreEqual("TestResource", retrievedRolePermission.Permission.Resource, "Permission resource should be correctly linked");
 
-        Assert.IsNotNull(retrievedGroupPermission);
-        Assert.AreEqual("TestGroup", retrievedGroupPermission.Group.Name);
-        Assert.AreEqual("TestAction", retrievedGroupPermission.Permission.Action);
+        Assert.IsNotNull(retrievedGroupPermission, "Group permission should be successfully created and retrieved");
+        Assert.AreEqual("TestGroup", retrievedGroupPermission.Group.Name, "Group name should be correctly associated");
+        Assert.AreEqual("TestAction", retrievedGroupPermission.Permission.Action, "Permission action should be correctly linked");
 
-        Assert.IsNotNull(retrievedUserPermission);
-        Assert.AreEqual("test@example.com", retrievedUserPermission.User.Email);
-        Assert.IsTrue(retrievedUserPermission.IsGranted);
+        Assert.IsNotNull(retrievedUserPermission, "User permission should be successfully created and retrieved");
+        Assert.AreEqual("test@example.com", retrievedUserPermission.User.Email, "User email should be correctly associated");
+        Assert.IsTrue(retrievedUserPermission.IsGranted, "Permission should be granted as configured");
     }
 
     /// <summary>
@@ -213,12 +213,12 @@ public class AppIdentityDbContextTests
             .FirstOrDefaultAsync(s => s.SessionToken == "test-session-token");
 
         // Assert
-        Assert.IsNotNull(retrievedSession);
-        Assert.AreEqual(user.Id, retrievedSession.UserId);
-        Assert.AreEqual("session@example.com", retrievedSession.User.Email);
-        Assert.AreEqual(SessionType.Mobile, retrievedSession.SessionType);
-        Assert.AreEqual("192.168.1.100", retrievedSession.IpAddress);
-        Assert.IsTrue(retrievedSession.IsValid);
+        Assert.IsNotNull(retrievedSession, "Session should be successfully created and retrieved");
+        Assert.AreEqual(user.Id, retrievedSession.UserId, "Session should be correctly linked to user");
+        Assert.AreEqual("session@example.com", retrievedSession.User.Email, "User navigation property should work correctly");
+        Assert.AreEqual(SessionType.Mobile, retrievedSession.SessionType, "Session type should be correctly stored");
+        Assert.AreEqual("192.168.1.100", retrievedSession.IpAddress, "IP address should be correctly recorded");
+        Assert.IsTrue(retrievedSession.IsValid, "New session should be valid by default");
     }
 
     /// <summary>
@@ -261,12 +261,12 @@ public class AppIdentityDbContextTests
             .FirstOrDefaultAsync(h => h.UserId == user.Id);
 
         // Assert
-        Assert.IsNotNull(retrievedHistory);
-        Assert.AreEqual(user.Id, retrievedHistory.UserId);
-        Assert.AreEqual("history@example.com", retrievedHistory.User.Email);
-        Assert.IsTrue(retrievedHistory.IsSuccessful);
-        Assert.AreEqual(AuthMethod.EmailPassword, retrievedHistory.AuthMethod);
-        Assert.AreEqual("10.0.0.1", retrievedHistory.IpAddress);
+        Assert.IsNotNull(retrievedHistory, "Login history should be successfully created and retrieved");
+        Assert.AreEqual(user.Id, retrievedHistory.UserId, "Login history should be correctly linked to user");
+        Assert.AreEqual("history@example.com", retrievedHistory.User.Email, "User navigation property should work correctly");
+        Assert.IsTrue(retrievedHistory.IsSuccessful, "Login attempt should be recorded as successful");
+        Assert.AreEqual(AuthMethod.EmailPassword, retrievedHistory.AuthMethod, "Authentication method should be correctly stored");
+        Assert.AreEqual("10.0.0.1", retrievedHistory.IpAddress, "IP address should be correctly recorded");
     }
 
     [TestMethod]
