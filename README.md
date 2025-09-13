@@ -19,7 +19,7 @@ Perfect for lightweight applications and microservices.
 - ✅ **Ideal for**: APIs, microservices, console applications
 - 🗃️ **Entities**: `AppUser`, `AppRole`, `AppGroup`, `AppPermission`
 
-### 🏢 **AspNet Architecture** - Enterprise Ready *(Coming Soon)*
+### 🏢 **AspNet Architecture** - Enterprise Ready ✅
 Built on ASP.NET Core Identity with enterprise extensions.
 
 - ✅ **Full ASP.NET Core Identity integration**
@@ -32,37 +32,45 @@ Built on ASP.NET Core Identity with enterprise extensions.
 
 ### ✅ Recently Completed Features
 
-- **🏗️ App Architecture - Core Implementation**
-  - Complete entity model (`AppUser`, `AppRole`, `AppGroup`, `AppPermission`) 
-  - Database context with seeding for default roles and permissions
-  - Entity relationships and navigation properties
-  - Permission system foundation implemented
-  
+- **🏗️ Dual Architecture Implementation**
+  - **App Architecture**: Complete standalone implementation (`AppUser`, `AppRole`, `AppGroup`, `AppPermission`)
+  - **AspNet Architecture**: Full ASP.NET Core Identity integration (`IdentityUser`, `IdentityRole`, `IdentityGroup`, `IdentityPermission`)
+  - Database contexts with seeding for both architectures
+  - Service layers with complete business logic
+
+- **🚀 Advanced Permission System**
+  - 5-level permission hierarchy with priority-based evaluation
+  - Automatic permission generation from entity attributes
+  - Simplified workflow for direct database application
+  - Traditional migration workflow for enterprise deployment
+  - CLI commands for streamlined development
+
 - **🧪 Comprehensive Test Suite**
-  - Entity tests with complete documentation and examples
+  - Entity tests for both architectures with detailed documentation
   - Integration tests for database operations and relationships
-  - Service tests with mock implementations and business logic validation
+  - Service tests with complete business logic validation
+  - CLI tests for permission generation workflows
   - All tests include detailed assert comments for clarity
 
-- **📦 Project Structure & Dependencies**
+- **📦 Modern Project Structure**
+  - Organized `src/` and `tests/` directory structure
+  - Separate projects for App, AspNet, Shared, and Migration components
   - Solution file with proper project references
-  - Updated project metadata and authorship information
-  - NuGet package configuration for distribution
   - **Integration with DIIWO-Core** for base entities and shared functionality
 
 ### 🚧 Currently In Development
 
-- **🏢 AspNet Architecture** - Next major milestone
-  - Entity model extensions of ASP.NET Core Identity
-  - Integration with Identity framework services
-  - Enterprise features and advanced capabilities
+- **🔄 Migration Services** - Architecture conversion utilities
+  - App ↔ AspNet migration services
+  - Data migration between architectures
+  - Validation and rollback capabilities
 
 ### 📋 Planned Features
 
-- **🌐 Multi-database support** (SQL Server, PostgreSQL, SQLite)
-- **📚 Comprehensive documentation** and usage examples
-- **🔧 Migration tools** between architectures
-- **📦 NuGet package publishing**
+- **🌐 Multi-database support** (PostgreSQL, SQLite, MySQL)
+- **📦 NuGet package publishing** and distribution
+- **🔧 Enhanced migration tools** with validation and rollback
+- **🎯 Performance optimizations** and caching strategies
 
 ## 🎯 5-Level Permission System
 
@@ -121,9 +129,28 @@ var user = new AppUser
 // Permission checking (service layer)
 var hasPermission = await _permissionService.UserHasPermissionAsync(userId, "Documents", "Read");
 
-// User management (service layer)  
+// User management (service layer)
 var newUser = await _userService.CreateUserAsync("user@example.com", hashedPassword, "John", "Doe");
 ```
+
+### Permission Management
+
+**🚀 Simplified Workflow** (Recommended for Development):
+```bash
+# Add [Permission] attributes to entities, then:
+dotnet run -- --apply-permissions
+```
+
+**🔧 Advanced Workflow** (Enterprise/Production):
+```bash
+# Generate migration files:
+dotnet run -- --make-permissions
+dotnet ef database update
+```
+
+📖 **Documentation:**
+- [Simplified Workflow Guide](docs/SIMPLIFIED-PERMISSION-WORKFLOW.md) - One-command approach
+- [Examples and Usage](examples/README.md) - Complete examples and best practices
 
 ## 🧪 Testing
 
@@ -136,16 +163,16 @@ dotnet test
 # Run with coverage
 dotnet test --collect:"XPlat Code Coverage"
 
-# Run specific test categories
-dotnet test Diiwo-Identity.Tests/App.Tests/ --filter Category=Entity
-dotnet test Diiwo-Identity.Tests/App.Tests/ --filter Category=Integration
-dotnet test Diiwo-Identity.Tests/App.Tests/ --filter Category=Service
+# Run specific test projects
+dotnet test tests/App.Tests/ --filter Category=Entity
+dotnet test tests/AspNet.Tests/ --filter Category=Integration
+dotnet test tests/Shared.Tests/ --filter Category=Service
 ```
 
 **Current Test Structure:**
-- **Entity Tests**: Validation of entity logic, relationships, and business rules
-- **Integration Tests**: Database context operations and data persistence
-- **Service Tests**: Business logic validation with comprehensive mocking
+- **App.Tests**: App architecture entity, integration, and service tests
+- **AspNet.Tests**: AspNet architecture with Identity integration tests
+- **Shared.Tests**: CLI commands, permission generation, and shared component tests
 
 ## 📖 Architecture Decision
 
@@ -155,11 +182,12 @@ dotnet test Diiwo-Identity.Tests/App.Tests/ --filter Category=Service
 - 🎮 **Console applications** or background services
 - 🔧 **Custom authentication** requirements
 
-### When to choose AspNet Architecture *(Coming Soon)*:
+### When to choose AspNet Architecture:
 - 🏢 **Enterprise web applications**
 - 🔐 **Complex authentication** scenarios (2FA, OAuth, etc.)
 - 🌐 **Web applications** using ASP.NET Core Identity features
 - 🎭 **Role-based and policy-based** authorization
+- ⚙️ **Integration** with existing ASP.NET Core Identity systems
 
 ## 🤝 Contributing
 
