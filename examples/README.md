@@ -240,8 +240,7 @@ System automatically handles duplicates - safe to re-run
 ## 📚 Related Documentation
 
 - [Simplified Permission Workflow](../docs/SIMPLIFIED-PERMISSION-WORKFLOW.md) - Complete workflow guide
-- [Architecture Guide](../docs/ARCHITECTURE-GUIDE-v2.md) - Dual architecture overview
-- [Repository README](../README.md) - Project overview and setup
+- [Repository README](../README.md) - Project overview and dual architecture information
 
 ---
 

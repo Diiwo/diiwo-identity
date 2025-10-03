@@ -2,7 +2,7 @@
 
 **One-command permission application for rapid development**
 
-*Complementary to the [Automatic Migrations](../examples/AutomaticMigrations.md) system*
+*Complementary to the traditional migration workflow*
 
 ## ⚡ Quick Overview
 
@@ -222,9 +222,8 @@ dotnet test --filter "CliExtensionsTests"
 
 ## 📚 Related Documentation
 
-- [Automatic Migrations Guide](../examples/AutomaticMigrations.md) - Traditional workflow
-- [App Architecture Guide](./APP-IMPLEMENTATION-GUIDE.md) - Core implementation
-- [Permission Attributes](../examples/AutomaticMigrations.md#permission-attributes) - Attribute usage
+- [Examples and Usage](../examples/README.md) - Complete examples and best practices
+- [Repository README](../README.md) - Project overview and architecture guide
 
 ---
 
