@@ -332,10 +332,10 @@ public class CliExtensionsTests
         try
         {
             var result = problematicArgs.ProcessPermissionCommands();
-            
+
             // The result depends on implementation, but should not throw
             // Either succeeds with defaults or fails gracefully
-            Assert.IsTrue(result is true or false, "Should return a boolean value");
+            Assert.IsNotNull(result, "Should return a boolean value");
             
             // Check if any error output was generated
             var errorOutput = _errorWriter.ToString();

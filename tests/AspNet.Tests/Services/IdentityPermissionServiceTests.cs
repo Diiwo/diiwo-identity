@@ -36,12 +36,12 @@ public class IdentityPermissionServiceTests
         // Create mock UserManager
         _mockUserManager = new Mock<UserManager<Diiwo.Identity.AspNet.Entities.IdentityUser>>(
             Mock.Of<IUserStore<Diiwo.Identity.AspNet.Entities.IdentityUser>>(),
-            null, null, null, null, null, null, null, null);
-        
-        // Create mock RoleManager  
+            null!, null!, null!, null!, null!, null!, null!, null!);
+
+        // Create mock RoleManager
         _mockRoleManager = new Mock<RoleManager<Diiwo.Identity.AspNet.Entities.IdentityRole>>(
             Mock.Of<IRoleStore<Diiwo.Identity.AspNet.Entities.IdentityRole>>(),
-            null, null, null, null);
+            null!, null!, null!, null!);
         
         _permissionService = new IdentityPermissionService(_context, _mockUserManager.Object, _mockRoleManager.Object, _mockLogger.Object);
     }

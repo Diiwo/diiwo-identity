@@ -72,7 +72,7 @@ public class AspNetUserServiceTests
 
         return new Mock<Microsoft.AspNetCore.Identity.UserManager<Diiwo.Identity.AspNet.Entities.IdentityUser>>(
             userStore.Object,
-            null, null, null, null, null, null, null, null);
+            null!, null!, null!, null!, null!, null!, null!, null!);
     }
 
     private Mock<Microsoft.AspNetCore.Identity.RoleManager<Diiwo.Identity.AspNet.Entities.IdentityRole>> CreateRoleManagerMock()
