@@ -103,7 +103,7 @@ public class AppToAspNetMigrationService : IAppToAspNetMigrationService
                     await CleanupAppDataAsync();
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 await transaction.RollbackAsync();
                 throw;
@@ -523,15 +523,17 @@ public class AppToAspNetMigrationService : IAppToAspNetMigrationService
         await _aspNetContext.SaveChangesAsync();
     }
 
-    private async Task CleanupAppDataAsync()
+    private Task CleanupAppDataAsync()
     {
         _logger.LogInformation("Cleaning up App architecture data...");
-        
+
         // This would remove all data from App tables
         // Implementation depends on business requirements
         // For now, just log that cleanup would happen here
-        
+
         _logger.LogWarning("App data cleanup not implemented - data preservation enabled by default");
+
+        return Task.CompletedTask;
     }
 
     /// <inheritdoc />

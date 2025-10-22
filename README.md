@@ -2,8 +2,10 @@
 
 **Dual-architecture identity management library for modern .NET applications**
 
+[![CI - Build and Test](https://github.com/Diiwo/diiwo-identity/actions/workflows/ci.yml/badge.svg)](https://github.com/Diiwo/diiwo-identity/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/download/dotnet/8.0)
+[![NuGet](https://img.shields.io/nuget/v/Diiwo.Identity.svg)](https://www.nuget.org/packages/Diiwo.Identity)
 [![GitHub](https://img.shields.io/badge/GitHub-diiwo%2Fdiiwo--identity-lightgrey.svg)](https://github.com/diiwo/diiwo-identity)
 
 ## 🏗️ Dual Architecture Design

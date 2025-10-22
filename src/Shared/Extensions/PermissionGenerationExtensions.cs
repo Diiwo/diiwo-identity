@@ -125,9 +125,9 @@ public static class PermissionGenerationExtensions
         foreach (var assembly in assemblies)
         {
             var entityTypes = GetEntityTypesWithPermissionAttributes(assembly);
-            
-            LogIfEnabled(logger, options, "Found {EntityCount} entities with permissions in assembly {AssemblyName}", 
-                entityTypes.Length, assembly.GetName().Name);
+
+            LogIfEnabled(logger, options, "Found {EntityCount} entities with permissions in assembly {AssemblyName}",
+                entityTypes.Length, assembly.GetName().Name ?? "Unknown");
 
             foreach (var entityType in entityTypes)
             {
@@ -179,8 +179,8 @@ public static class PermissionGenerationExtensions
         {
             var entityTypes = GetEntityTypesWithPermissionAttributes(assembly);
             
-            LogIfEnabled(logger, options, "Found {EntityCount} entities with permissions in assembly {AssemblyName}", 
-                entityTypes.Length, assembly.GetName().Name);
+            LogIfEnabled(logger, options, "Found {EntityCount} entities with permissions in assembly {AssemblyName}",
+                entityTypes.Length, assembly.GetName().Name ?? "Unknown");
 
             foreach (var entityType in entityTypes)
             {
@@ -248,9 +248,9 @@ public static class PermissionGenerationExtensions
                 context.Permissions.Add(newPermission);
                 createdCount++;
 
-                LogIfEnabled(logger, options, 
+                LogIfEnabled(logger, options,
                     "Created AppPermission: {Resource}.{Action} - {Description} (Scope: {Scope}, Priority: {Priority})",
-                    resourceName, permissionAttr.Action, permissionAttr.Description, 
+                    resourceName, permissionAttr.Action, permissionAttr.Description ?? string.Empty,
                     permissionAttr.Scope, permissionAttr.Priority);
             }
             else
@@ -316,9 +316,9 @@ public static class PermissionGenerationExtensions
                 context.IdentityPermissions.Add(newPermission);
                 createdCount++;
 
-                LogIfEnabled(logger, options, 
+                LogIfEnabled(logger, options,
                     "Created IdentityPermission: {Resource}.{Action} - {Description} (Scope: {Scope}, Priority: {Priority})",
-                    resourceName, permissionAttr.Action, permissionAttr.Description, 
+                    resourceName, permissionAttr.Action, permissionAttr.Description ?? string.Empty,
                     permissionAttr.Scope, permissionAttr.Priority);
             }
             else

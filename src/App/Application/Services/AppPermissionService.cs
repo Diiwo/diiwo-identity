@@ -365,11 +365,11 @@ public class AppPermissionService : IAppPermissionService
         return permissions.ToList();
     }
 
-    private async Task<List<AppRole>> GetUserRolesAsync(Guid userId)
+    private Task<List<AppRole>> GetUserRolesAsync(Guid userId)
     {
         // This would need to be implemented based on your role assignment logic
         // For now, returning empty list since we don't have a direct role assignment table
-        return new List<AppRole>();
+        return Task.FromResult(new List<AppRole>());
     }
 
     // Implement interface methods that match the expected signatures

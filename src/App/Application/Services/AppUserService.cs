@@ -123,11 +123,10 @@ public class AppUserService : IAppUserService
 
     // Authentication
     /// <inheritdoc />
-    public async Task<bool> ValidatePasswordAsync(AppUser user, string password)
+    public Task<bool> ValidatePasswordAsync(AppUser user, string password)
     {
-        // In a real implementation, you would use proper password hashing
-        // This is a simplified example
-        return BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
+        // BCrypt.Verify is synchronous
+        return Task.FromResult(BCrypt.Net.BCrypt.Verify(password, user.PasswordHash));
     }
 
     /// <inheritdoc />
