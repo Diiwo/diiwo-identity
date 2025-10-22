@@ -1,5 +1,8 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Diiwo.Identity.Shared.Enums;
+using Diiwo.Core.Domain.Interfaces;
+using Diiwo.Core.Domain.Enums;
 
 namespace Diiwo.Identity.AspNet.Entities;
 
@@ -7,7 +10,7 @@ namespace Diiwo.Identity.AspNet.Entities;
 /// ASPNET ARCHITECTURE - Enterprise user session tracking
 /// Tracks user sessions for security and audit purposes with enterprise features
 /// </summary>
-public class IdentityUserSession
+public class IdentityUserSession : IDomainEntity
 {
     public IdentityUserSession()
     {
@@ -16,6 +19,7 @@ public class IdentityUserSession
         UpdatedAt = DateTime.UtcNow;
         SessionToken = Guid.NewGuid().ToString("N");
         ExpiresAt = DateTime.UtcNow.AddHours(24); // Default 24 hours
+        State = EntityState.Active;
     }
 
     [Key]
@@ -35,7 +39,8 @@ public class IdentityUserSession
 
     public string? UserAgent { get; set; }
 
-    public bool IsActive { get; set; } = true;
+    [NotMapped]
+    public bool IsActive => State == EntityState.Active;
 
     public DateTime? LastActivityAt { get; set; }
 
@@ -54,11 +59,12 @@ public class IdentityUserSession
 
     public string? SSOProvider { get; set; }
 
-    // Enterprise audit properties
+    // IUserTracked implementation - allows automatic audit via AuditInterceptor
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public Guid? CreatedBy { get; set; }
     public Guid? UpdatedBy { get; set; }
+    public EntityState State { get; set; } = EntityState.Active;
 
     // Navigation properties
     public virtual IdentityUser User { get; set; } = null!;
@@ -66,11 +72,13 @@ public class IdentityUserSession
     /// <summary>
     /// Check if session is expired
     /// </summary>
+    [NotMapped]
     public bool IsExpired => ExpiresAt <= DateTime.UtcNow;
 
     /// <summary>
     /// Check if session is valid (active, not expired)
     /// </summary>
+    [NotMapped]
     public bool IsValid => IsActive && !IsExpired;
 
     /// <summary>
@@ -115,6 +123,24 @@ public class IdentityUserSession
     public void ClearRefreshToken()
     {
         RefreshToken = null;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// IDomainEntity implementation - Soft delete the entity
+    /// </summary>
+    public void SoftDelete()
+    {
+        State = EntityState.Terminated;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// IDomainEntity implementation - Restore a soft-deleted entity
+    /// </summary>
+    public void Restore()
+    {
+        State = EntityState.Active;
         UpdatedAt = DateTime.UtcNow;
     }
 }

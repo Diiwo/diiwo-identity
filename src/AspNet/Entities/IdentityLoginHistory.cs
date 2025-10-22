@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Diiwo.Identity.Shared.Enums;
+using Diiwo.Core.Domain.Interfaces;
+using Diiwo.Core.Domain.Enums;
 
 namespace Diiwo.Identity.AspNet.Entities;
 
@@ -7,13 +9,14 @@ namespace Diiwo.Identity.AspNet.Entities;
 /// ASPNET ARCHITECTURE - Enterprise login history tracking
 /// Tracks all login attempts for security audit with enterprise features
 /// </summary>
-public class IdentityLoginHistory
+public class IdentityLoginHistory : IDomainEntity
 {
     public IdentityLoginHistory()
     {
         Id = Guid.NewGuid();
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
+        State = EntityState.Active;
     }
 
     [Key]
@@ -46,11 +49,12 @@ public class IdentityLoginHistory
 
     public bool MFACompleted { get; set; } = false;
 
-    // Enterprise audit properties
+    // IUserTracked implementation - allows automatic audit via AuditInterceptor
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public Guid? CreatedBy { get; set; }
     public Guid? UpdatedBy { get; set; }
+    public EntityState State { get; set; } = EntityState.Active;
 
     // Navigation properties
     public virtual IdentityUser User { get; set; } = null!;
@@ -137,6 +141,24 @@ public class IdentityLoginHistory
             score += 25;
 
         RiskScore = Math.Min(100, score);
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// IDomainEntity implementation - Soft delete the entity
+    /// </summary>
+    public void SoftDelete()
+    {
+        State = EntityState.Terminated;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// IDomainEntity implementation - Restore a soft-deleted entity
+    /// </summary>
+    public void Restore()
+    {
+        State = EntityState.Active;
         UpdatedAt = DateTime.UtcNow;
     }
 }

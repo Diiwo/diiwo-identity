@@ -4,6 +4,7 @@ using Diiwo.Identity.AspNet.DbContext;
 using Diiwo.Identity.AspNet.Entities;
 using Diiwo.Identity.AspNet.Abstractions.Services;
 using Diiwo.Identity.Shared.Enums;
+using DomainEntityState = Diiwo.Core.Domain.Enums.EntityState;
 
 namespace Diiwo.Identity.AspNet.Application.Services;
 
@@ -35,6 +36,7 @@ public class AspNetPermissionService : IAspNetPermissionService
     /// <inheritdoc />
     public async Task<IdentityPermission> CreatePermissionAsync(string resource, string action, string? description = null, PermissionScope scope = PermissionScope.Global)
     {
+        // Note: CreatedAt, UpdatedAt, CreatedBy, UpdatedBy are set automatically by AuditInterceptor
         var permission = new IdentityPermission
         {
             Resource = resource,
@@ -53,7 +55,7 @@ public class AspNetPermissionService : IAspNetPermissionService
     public async Task<List<IdentityPermission>> GetAllPermissionsAsync()
     {
         return await _context.IdentityPermissions
-            .Where(p => p.IsActive)
+            .Where(p => p.State == DomainEntityState.Active)
             .OrderBy(p => p.Resource)
             .ThenBy(p => p.Action)
             .ToListAsync();
@@ -63,7 +65,7 @@ public class AspNetPermissionService : IAspNetPermissionService
     public async Task<IdentityPermission?> GetPermissionAsync(string resource, string action)
     {
         return await _context.IdentityPermissions
-            .FirstOrDefaultAsync(p => p.Resource == resource && p.Action == action && p.IsActive);
+            .FirstOrDefaultAsync(p => p.Resource == resource && p.Action == action && p.State == DomainEntityState.Active);
     }
 
     // 5-Level Permission Check: Role → Group → User → Model → Object
@@ -149,6 +151,7 @@ public class AspNetPermissionService : IAspNetPermissionService
         var permission = await GetPermissionAsync(resource, action);
         if (permission == null) return false;
 
+        // Note: CreatedAt, UpdatedAt, CreatedBy, UpdatedBy are set automatically by AuditInterceptor
         var rolePermission = new IdentityRolePermission
         {
             RoleId = role.Id,
@@ -170,6 +173,7 @@ public class AspNetPermissionService : IAspNetPermissionService
         var permission = await GetPermissionAsync(resource, action);
         if (permission == null) return false;
 
+        // Note: CreatedAt, UpdatedAt, CreatedBy, UpdatedBy are set automatically by AuditInterceptor
         var groupPermission = new IdentityGroupPermission
         {
             GroupId = groupId,
@@ -191,6 +195,7 @@ public class AspNetPermissionService : IAspNetPermissionService
         var permission = await GetPermissionAsync(resource, action);
         if (permission == null) return false;
 
+        // Note: CreatedAt, UpdatedAt, CreatedBy, UpdatedBy are set automatically by AuditInterceptor
         var userPermission = new IdentityUserPermission
         {
             UserId = userId,
@@ -219,7 +224,7 @@ public class AspNetPermissionService : IAspNetPermissionService
             .Where(rp => userRoles.Contains(rp.Role.Name!) &&
                         rp.Permission.Resource == resource &&
                         rp.Permission.Action == action &&
-                        rp.Permission.IsActive)
+                        rp.Permission.State == DomainEntityState.Active)
             .ToListAsync();
     }
 
@@ -238,7 +243,7 @@ public class AspNetPermissionService : IAspNetPermissionService
             .Where(gp => userGroupIds.Contains(gp.GroupId) &&
                         gp.Permission.Resource == resource &&
                         gp.Permission.Action == action &&
-                        gp.Permission.IsActive)
+                        gp.Permission.State == DomainEntityState.Active)
             .ToListAsync();
     }
 
@@ -249,6 +254,6 @@ public class AspNetPermissionService : IAspNetPermissionService
             .FirstOrDefaultAsync(up => up.UserId == userId &&
                                      up.Permission.Resource == resource &&
                                      up.Permission.Action == action &&
-                                     up.Permission.IsActive);
+                                     up.Permission.State == DomainEntityState.Active);
     }
 }

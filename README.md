@@ -38,12 +38,28 @@ Built on ASP.NET Core Identity with enterprise extensions.
   - Database contexts with seeding for both architectures
   - Service layers with complete business logic
 
+- **🔍 Enterprise Audit Trail System** ⭐ NEW
+  - **Automatic audit tracking** - `CreatedAt`, `UpdatedAt`, `CreatedBy`, `UpdatedBy` fields managed automatically
+  - **Soft delete support** - Entities marked as `Terminated` instead of hard deletion
+  - **Entity state management** - Track entity lifecycle with `EntityState` enum
+  - **Zero manual code** - All audit trails handled by AuditInterceptor from Diiwo.Core
+  - **Compliance ready** - Enterprise-grade audit capabilities for regulatory requirements
+  - **Complete examples** - Comprehensive demonstrations in `/examples` directory
+
+- **🚀 Enterprise Session Management** ⭐ NEW
+  - **Advanced session tracking** - Device fingerprinting, location tracking, SSO support
+  - **JWT refresh tokens** - Secure token-based authentication with automatic refresh
+  - **Session security** - IP tracking, user agent validation, concurrent session limits
+  - **Enterprise features** - SSO provider integration, device management
+  - **Complete audit trail** - All session activities automatically tracked
+
 - **🚀 Advanced Permission System**
   - 5-level permission hierarchy with priority-based evaluation
   - Automatic permission generation from entity attributes
   - Simplified workflow for direct database application
   - Traditional migration workflow for enterprise deployment
   - CLI commands for streamlined development
+  - **Full audit trail** for all permission changes
 
 - **🧪 Comprehensive Test Suite**
   - Entity tests for both architectures with detailed documentation
@@ -56,7 +72,13 @@ Built on ASP.NET Core Identity with enterprise extensions.
   - Organized `src/` and `tests/` directory structure
   - Separate projects for App, AspNet, Shared, and Migration components
   - Solution file with proper project references
-  - **Integration with DIIWO-Core** for base entities and shared functionality
+  - **Integration with Diiwo.Core** for base entities and automatic auditing
+
+- **📖 Comprehensive Documentation** ✅
+  - Complete architecture comparison guide (App vs AspNet)
+  - Enterprise implementation examples and patterns
+  - Production deployment strategies and best practices
+  - Migration guides for architecture transitions
 
 ### 🚧 Currently In Development
 
@@ -71,6 +93,59 @@ Built on ASP.NET Core Identity with enterprise extensions.
 - **📦 NuGet package publishing** and distribution
 - **🔧 Enhanced migration tools** with validation and rollback
 - **🎯 Performance optimizations** and caching strategies
+- **🔒 Advanced security features** (MFA, risk-based authentication)
+- **📊 Analytics dashboard** for user behavior and security monitoring
+
+## 🔍 Enterprise Audit Trail System
+
+**Zero-code automatic audit tracking** powered by Diiwo.Core AuditInterceptor:
+
+### ✨ Key Features
+- **🎯 Automatic Tracking**: `CreatedAt`, `UpdatedAt`, `CreatedBy`, `UpdatedBy` - **no manual code required**
+- **🗑️ Soft Delete**: Entities marked as `Terminated` instead of permanent deletion
+- **📊 State Management**: Track entity lifecycle with `EntityState` enum (`Active`, `Inactive`, `Terminated`)
+- **👤 User Attribution**: Automatic tracking of who made changes and when
+- **🏢 Compliance Ready**: Enterprise-grade audit capabilities for regulatory requirements
+
+### 🎪 App Architecture Implementation
+```csharp
+// App entities inherit from DomainEntity - automatic audit trail!
+public class AppUser : DomainEntity  // ✅ Inherits all audit capabilities
+{
+    public required string Email { get; set; }
+    public required string PasswordHash { get; set; }
+    // CreatedAt, UpdatedAt, CreatedBy, UpdatedBy automatically managed!
+}
+```
+
+### 🏢 AspNet Architecture Implementation
+```csharp
+// AspNet entities implement IDomainEntity - automatic audit trail!
+public class IdentityUser : IdentityUser<Guid>, IDomainEntity  // ✅ Enterprise audit
+{
+    public string? FirstName { get; set; }
+    // Audit fields (CreatedAt, UpdatedAt, etc.) automatically managed!
+}
+```
+
+### 📝 Service Layer - No Manual Audit Code!
+```csharp
+// Before: Manual audit assignments ❌
+var user = new AppUser
+{
+    Email = "user@example.com",
+    CreatedAt = DateTime.UtcNow,        // ❌ Manual
+    UpdatedAt = DateTime.UtcNow,        // ❌ Manual
+    CreatedBy = currentUserId           // ❌ Manual
+};
+
+// After: Automatic audit tracking ✅
+var user = new AppUser
+{
+    Email = "user@example.com"
+    // ✅ CreatedAt, UpdatedAt, CreatedBy, UpdatedBy set automatically!
+};
+```
 
 ## 🎯 5-Level Permission System
 
@@ -78,7 +153,7 @@ Advanced permission hierarchy with priority-based evaluation:
 
 ```
 1. 🏆 Role Permissions     (Priority 0 - HIGHEST)
-2. 👥 Group Permissions    (Priority 50)  
+2. 👥 Group Permissions    (Priority 50)
 3. 👤 User Permissions     (Priority 100)
 4. 📊 Model Permissions    (Priority 150)
 5. 🎯 Object Permissions   (Priority 200 - LOWEST)
@@ -88,11 +163,12 @@ Advanced permission hierarchy with priority-based evaluation:
 - ❌ **DENY always wins** over GRANT
 - 🏆 **Higher priority** (lower number) takes precedence
 - 🔒 **Deny by default** if no explicit permissions exist
+- **🔍 Full audit trail** for all permission changes
 
 ## 🔧 Dependencies
 
 This project depends on:
-- **[DIIWO-Core](https://github.com/diiwo/diiwo-core)** - Base entities and shared functionality
+- **[Diiwo.Core](https://github.com/diiwo/diiwo-core)** - Base entities and shared functionality
 - **.NET 8.0** - Latest .NET framework
 - **Entity Framework Core** - Data access and ORM
 
@@ -107,30 +183,58 @@ git clone https://github.com/diiwo/diiwo-identity.git
 # Navigate to project directory
 cd diiwo-identity
 
-# Restore dependencies (including DIIWO-Core)
+# Restore dependencies (including Diiwo.Core)
 dotnet restore
 
 # Run tests to verify installation
 dotnet test
 ```
 
-### Current App Architecture Usage
+### Current App Architecture Usage (with Enterprise Audit)
 
 ```csharp
-// Example of current entity usage
+// ✅ Enterprise-ready entity with automatic audit trail
 var user = new AppUser
 {
     Email = "user@example.com",
     PasswordHash = "hashed-password",
     FirstName = "John",
     LastName = "Doe"
+    // ✅ CreatedAt, UpdatedAt, CreatedBy, UpdatedBy automatically set!
 };
 
-// Permission checking (service layer)
+// Permission checking with audit trail
 var hasPermission = await _permissionService.UserHasPermissionAsync(userId, "Documents", "Read");
 
-// User management (service layer)
+// User management with automatic audit tracking
 var newUser = await _userService.CreateUserAsync("user@example.com", hashedPassword, "John", "Doe");
+// ✅ All changes automatically tracked with full audit trail!
+
+// Soft delete - preserves audit history
+await _userService.DeleteUserAsync(userId);
+// ✅ User marked as 'Terminated', not permanently deleted
+```
+
+### Enterprise AspNet Architecture Usage
+
+```csharp
+// ✅ ASP.NET Core Identity + Enterprise audit trail
+var identityUser = new IdentityUser
+{
+    Email = "enterprise@example.com",
+    UserName = "enterprise-user",
+    FirstName = "Enterprise",
+    LastName = "User"
+    // ✅ IDomainEntity interface provides automatic audit trail!
+};
+
+// Full ASP.NET Core Identity integration with audit
+var result = await _userManager.CreateAsync(identityUser, "SecurePassword123!");
+// ✅ All Identity operations tracked with enterprise audit trail!
+
+// Advanced permission system with audit
+await _permissionService.AssignPermissionToUserAsync(userId, permissionId, isGranted: true);
+// ✅ Permission changes tracked automatically!
 ```
 
 ### Permission Management
@@ -148,7 +252,34 @@ dotnet run -- --make-permissions
 dotnet ef database update
 ```
 
+## 📚 Comprehensive Examples
+
+Explore the complete enterprise features with our detailed examples:
+
+### 🔍 Audit Trail Examples
+```bash
+# Run App Architecture audit trail examples
+cd examples
+dotnet run AuditTrailExample.cs
+
+# Run AspNet Architecture enterprise examples
+cd examples
+dotnet run AspNetAuditTrailExample.cs
+```
+
+**Examples demonstrate**:
+- ✅ **User Lifecycle Tracking** - Create, update, soft delete with automatic audit
+- ✅ **Permission Management** - 5-level permission system with full audit trail
+- ✅ **Session Management** - Complete session lifecycle tracking
+- ✅ **Login History** - Authentication attempt logging with enterprise audit
+- ✅ **Group Management** - User organization with permission inheritance
+- ✅ **Enterprise Integration** - ASP.NET Core Identity with advanced audit features
+
+See [examples/README.md](examples/README.md) for detailed documentation and sample output.
+
 📖 **Documentation:**
+- [Architecture Comparison Guide](docs/ARCHITECTURE-COMPARISON.md) - Choose between App vs AspNet architectures
+- [Implementation Examples](docs/IMPLEMENTATION-EXAMPLES.md) - Enterprise patterns and code examples
 - [Simplified Workflow Guide](docs/SIMPLIFIED-PERMISSION-WORKFLOW.md) - One-command approach
 - [Examples and Usage](examples/README.md) - Complete examples and best practices
 
@@ -181,6 +312,8 @@ dotnet test tests/Shared.Tests/ --filter Category=Service
 - 🚀 **Microservices** that need lightweight identity
 - 🎮 **Console applications** or background services
 - 🔧 **Custom authentication** requirements
+- ⚡ **Performance-critical** applications requiring minimal overhead
+- 🔄 **High flexibility** for custom business logic
 
 ### When to choose AspNet Architecture:
 - 🏢 **Enterprise web applications**
@@ -188,6 +321,10 @@ dotnet test tests/Shared.Tests/ --filter Category=Service
 - 🌐 **Web applications** using ASP.NET Core Identity features
 - 🎭 **Role-based and policy-based** authorization
 - ⚙️ **Integration** with existing ASP.NET Core Identity systems
+- 🛡️ **Advanced security** requirements and compliance needs
+- 📊 **Enterprise audit** and reporting requirements
+
+💡 **Need help choosing?** See our [Architecture Comparison Guide](docs/ARCHITECTURE-COMPARISON.md) for detailed decision matrices and performance benchmarks.
 
 ## 🤝 Contributing
 
@@ -198,7 +335,7 @@ This project is developed and maintained by **Joaquin Lugo Zavala** under the **
 2. Maintain comprehensive test coverage for all new features
 3. Update documentation for any API changes
 4. Use conventional commit messages
-5. Ensure integration with DIIWO-Core remains clean
+5. Ensure integration with Diiwo.Core remains clean
 
 ## 📜 License
 

@@ -16,8 +16,6 @@ public class AppUserTests
     /// - User ID should be automatically generated and not empty (inherited from UserTrackedEntity)
     /// - IsActive should default to true for new users (inherited from BaseEntity)
     /// - EmailConfirmed should default to false requiring email verification
-    /// - FailedLoginAttempts should start at 0
-    /// - LockedUntil should be null (user not locked)
     /// - All navigation collections should be initialized as empty lists
     /// </summary>
     [TestMethod]
@@ -34,8 +32,6 @@ public class AppUserTests
         Assert.AreNotEqual(Guid.Empty, user.Id, "User ID should be automatically generated");
         Assert.IsTrue(user.IsActive, "New users should be active by default");
         Assert.IsFalse(user.EmailConfirmed, "Email should require confirmation by default");
-        Assert.AreEqual(0, user.FailedLoginAttempts, "Failed login attempts should start at 0");
-        Assert.IsNull(user.LockedUntil, "New users should not be locked out");
         Assert.IsNotNull(user.UserSessions, "UserSessions collection should be initialized");
         Assert.IsNotNull(user.LoginHistory, "LoginHistory collection should be initialized");
         Assert.IsNotNull(user.UserPermissions, "UserPermissions collection should be initialized");
@@ -150,89 +146,12 @@ public class AppUserTests
         Assert.AreEqual(string.Empty, fullName, "FullName should return empty string when both names are null");
     }
 
-    /// <summary>
-    /// Test Case: IsAccountLocked Property when User Not Locked
-    /// Description: Verifies IsAccountLocked property returns false when user is not locked
-    /// Acceptance Criteria:
-    /// - Should return false when LockedUntil is null
-    /// - Should return false when IsLocked (inherited) is false
-    /// - Should handle normal user state correctly
-    /// </summary>
-    [TestMethod]
-    public void IsAccountLocked_WhenNotLocked_ReturnsFalse()
-    {
-        // Arrange
-        var user = new AppUser
-        {
-            Email = "test@example.com",
-            PasswordHash = "hashed-password",
-            LockedUntil = null
-        };
-
-        // Act
-        var isLocked = user.IsAccountLocked;
-
-        // Assert
-        Assert.IsFalse(isLocked, "IsAccountLocked should return false when user is not locked");
-    }
-
-    /// <summary>
-    /// Test Case: IsAccountLocked Property when Lock Expired
-    /// Description: Verifies IsAccountLocked property returns false when lock period has expired
-    /// Acceptance Criteria:
-    /// - Should return false when LockedUntil is in the past
-    /// - Should handle automatic unlock correctly
-    /// - Should use UTC time for comparison
-    /// </summary>
-    [TestMethod]
-    public void IsAccountLocked_WhenLockExpired_ReturnsFalse()
-    {
-        // Arrange
-        var user = new AppUser
-        {
-            Email = "test@example.com",
-            PasswordHash = "hashed-password",
-            LockedUntil = DateTime.UtcNow.AddHours(-1)
-        };
-
-        // Act
-        var isLocked = user.IsAccountLocked;
-
-        // Assert
-        Assert.IsFalse(isLocked, "IsAccountLocked should return false when lock period has expired");
-    }
-
-    /// <summary>
-    /// Test Case: IsAccountLocked Property when Currently Locked
-    /// Description: Verifies IsAccountLocked property returns true when user is currently locked
-    /// Acceptance Criteria:
-    /// - Should return true when LockedUntil is in the future
-    /// - Should prevent user access during lock period
-    /// - Should handle active lock correctly
-    /// </summary>
-    [TestMethod]
-    public void IsAccountLocked_WhenCurrentlyLocked_ReturnsTrue()
-    {
-        // Arrange
-        var user = new AppUser
-        {
-            Email = "test@example.com",
-            PasswordHash = "hashed-password",
-            LockedUntil = DateTime.UtcNow.AddHours(1)
-        };
-
-        // Act
-        var isLocked = user.IsAccountLocked;
-
-        // Assert
-        Assert.IsTrue(isLocked, "IsAccountLocked should return true when user is currently locked");
-    }
 
     /// <summary>
     /// Test Case: CanLogin Property with Valid User
     /// Description: Verifies CanLogin property returns true when user meets all login requirements
     /// Acceptance Criteria:
-    /// - Should return true when IsActive, not locked, and email confirmed
+    /// - Should return true when IsActive and email confirmed
     /// - Should allow login for valid users
     /// - Should check all required conditions
     /// </summary>
@@ -245,7 +164,6 @@ public class AppUserTests
             Email = "test@example.com",
             PasswordHash = "hashed-password",
             EmailConfirmed = true,
-            LockedUntil = null
         };
         // IsActive defaults to true from base class
 
@@ -273,7 +191,6 @@ public class AppUserTests
             Email = "test@example.com",
             PasswordHash = "hashed-password",
             EmailConfirmed = false,
-            LockedUntil = null
         };
 
         // Act

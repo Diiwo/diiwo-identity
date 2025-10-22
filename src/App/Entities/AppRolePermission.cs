@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Diiwo.Core.Domain.Entities;
 
 namespace Diiwo.Identity.App.Entities;
 
@@ -6,18 +7,12 @@ namespace Diiwo.Identity.App.Entities;
 /// Level 1: Role-based permissions (Priority 0 - Highest)
 /// Assigns permissions directly to roles in the 5-level permission system
 /// </summary>
-public class AppRolePermission
+public class AppRolePermission : DomainEntity
 {
     public AppRolePermission()
     {
-        Id = Guid.NewGuid();
-        CreatedAt = DateTime.UtcNow;
-        UpdatedAt = DateTime.UtcNow;
         Priority = 0; // Highest priority
     }
-
-    [Key]
-    public Guid Id { get; set; }
 
     public Guid RoleId { get; set; }
 
@@ -27,11 +22,7 @@ public class AppRolePermission
 
     public int Priority { get; set; } = 0;
 
-    // Audit fields
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
-    public Guid? CreatedBy { get; set; }
-    public Guid? UpdatedBy { get; set; }
+    // Note: Audit fields (CreatedAt, UpdatedAt, CreatedBy, UpdatedBy) and IsActive come from DomainEntity
 
     // Navigation properties
     public virtual AppRole Role { get; set; } = null!;

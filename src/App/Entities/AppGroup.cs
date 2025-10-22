@@ -8,7 +8,7 @@ namespace Diiwo.Identity.App.Entities;
 /// Allows grouping users for easier permission management
 /// Part of the 5-level permission system (Level 2)
 /// </summary>
-public class AppGroup : UserTrackedEntity
+public class AppGroup : DomainEntity
 {
     [Required]
     [StringLength(100)]

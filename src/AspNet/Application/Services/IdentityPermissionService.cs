@@ -4,6 +4,7 @@ using Diiwo.Identity.AspNet.DbContext;
 using Diiwo.Identity.AspNet.Entities;
 using Diiwo.Identity.Shared.Abstractions.Services;
 using Diiwo.Identity.Shared.Enums;
+using DomainEntityState = Diiwo.Core.Domain.Enums.EntityState;
 
 namespace Diiwo.Identity.AspNet.Application.Services;
 
@@ -149,26 +150,22 @@ public class IdentityPermissionService : IIdentityPermissionService
             if (existingPermission != null)
             {
                 // Update existing permission
+                // Note: UpdatedAt and UpdatedBy are set automatically by AuditInterceptor
                 existingPermission.IsGranted = true;
                 existingPermission.Priority = priority;
                 existingPermission.ExpiresAt = expiresAt;
-                existingPermission.UpdatedAt = DateTime.UtcNow;
-                existingPermission.UpdatedBy = grantedBy;
             }
             else
             {
                 // Create new permission
+                // Note: CreatedAt, UpdatedAt, CreatedBy, UpdatedBy are set automatically by AuditInterceptor
                 var userPermission = new IdentityUserPermission
                 {
                     UserId = userId,
                     PermissionId = permission.Id,
                     IsGranted = true,
                     Priority = priority,
-                    ExpiresAt = expiresAt,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    CreatedBy = grantedBy,
-                    UpdatedBy = grantedBy
+                    ExpiresAt = expiresAt
                 };
 
                 _context.IdentityUserPermissions.Add(userPermission);
@@ -204,9 +201,8 @@ public class IdentityPermissionService : IIdentityPermissionService
             if (userPermission == null) return false;
 
             // Mark as revoked (not granted)
+            // Note: UpdatedAt and UpdatedBy are set automatically by AuditInterceptor
             userPermission.IsGranted = false;
-            userPermission.UpdatedAt = DateTime.UtcNow;
-            userPermission.UpdatedBy = revokedBy;
 
             await _context.SaveChangesAsync();
 
@@ -293,10 +289,10 @@ public class IdentityPermissionService : IIdentityPermissionService
         return await _context.IdentityRolePermissions
             .Include(rp => rp.Permission)
             .Include(rp => rp.Role)
-            .Where(rp => userRoles.Contains(rp.Role.Name!) && 
-                        rp.Permission.Resource == resource && 
+            .Where(rp => userRoles.Contains(rp.Role.Name!) &&
+                        rp.Permission.Resource == resource &&
                         rp.Permission.Action == action &&
-                        rp.Permission.IsActive)
+                        rp.Permission.State == DomainEntityState.Active)
             .ToListAsync();
     }
 
@@ -312,10 +308,10 @@ public class IdentityPermissionService : IIdentityPermissionService
 
         return await _context.IdentityGroupPermissions
             .Include(gp => gp.Permission)
-            .Where(gp => userGroupIds.Contains(gp.GroupId) && 
-                        gp.Permission.Resource == resource && 
+            .Where(gp => userGroupIds.Contains(gp.GroupId) &&
+                        gp.Permission.Resource == resource &&
                         gp.Permission.Action == action &&
-                        gp.Permission.IsActive)
+                        gp.Permission.State == DomainEntityState.Active)
             .ToListAsync();
     }
 
@@ -323,16 +319,16 @@ public class IdentityPermissionService : IIdentityPermissionService
     {
         return await _context.IdentityUserPermissions
             .Include(up => up.Permission)
-            .FirstOrDefaultAsync(up => up.UserId == userId && 
-                                     up.Permission.Resource == resource && 
+            .FirstOrDefaultAsync(up => up.UserId == userId &&
+                                     up.Permission.Resource == resource &&
                                      up.Permission.Action == action &&
-                                     up.Permission.IsActive);
+                                     up.Permission.State == DomainEntityState.Active);
     }
 
     public async Task<IdentityPermission?> GetPermissionAsync(string resource, string action)
     {
         return await _context.IdentityPermissions
-            .FirstOrDefaultAsync(p => p.Resource == resource && p.Action == action && p.IsActive);
+            .FirstOrDefaultAsync(p => p.Resource == resource && p.Action == action && p.State == DomainEntityState.Active);
     }
 
     private async Task<IdentityPermission> GetOrCreatePermissionAsync(string resource, string action)
@@ -341,15 +337,14 @@ public class IdentityPermissionService : IIdentityPermissionService
         
         if (permission == null)
         {
+            // Note: CreatedAt, UpdatedAt, CreatedBy, UpdatedBy are set automatically by AuditInterceptor
             permission = new IdentityPermission
             {
                 Resource = resource,
                 Action = action,
                 Description = $"Auto-created permission for {resource}.{action}",
                 Scope = PermissionScope.Global,
-                IsActive = true,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                State = DomainEntityState.Active
             };
 
             _context.IdentityPermissions.Add(permission);

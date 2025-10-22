@@ -154,14 +154,13 @@ public class AppPermissionService : IAppPermissionService
     /// <inheritdoc />
     public async Task<AppPermission> CreatePermissionAsync(string resource, string action, string? description = null, PermissionScope scope = PermissionScope.Global)
     {
+        // Note: CreatedAt, UpdatedAt, CreatedBy, UpdatedBy are set automatically by AuditInterceptor
         var permission = new AppPermission
         {
             Resource = resource,
             Action = action,
             Description = description,
-            Scope = scope,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            Scope = scope
         };
 
         _context.Permissions.Add(permission);
@@ -183,19 +182,18 @@ public class AppPermissionService : IAppPermissionService
             existingPermission.IsGranted = isGranted;
             existingPermission.Priority = priority;
             existingPermission.ExpiresAt = expiresAt;
-            existingPermission.UpdatedAt = DateTime.UtcNow;
+            // Note: UpdatedAt, UpdatedBy are set automatically by AuditInterceptor
         }
         else
         {
+            // Note: CreatedAt, UpdatedAt, CreatedBy, UpdatedBy are set automatically by AuditInterceptor
             var userPermission = new AppUserPermission
             {
                 UserId = userId,
                 PermissionId = permissionId,
                 IsGranted = isGranted,
                 Priority = priority,
-                ExpiresAt = expiresAt,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                ExpiresAt = expiresAt
             };
 
             _context.UserPermissions.Add(userPermission);
@@ -235,18 +233,17 @@ public class AppPermissionService : IAppPermissionService
         {
             existingPermission.IsGranted = isGranted;
             existingPermission.Priority = priority;
-            existingPermission.UpdatedAt = DateTime.UtcNow;
+            // Note: UpdatedAt, UpdatedBy are set automatically by AuditInterceptor
         }
         else
         {
+            // Note: CreatedAt, UpdatedAt, CreatedBy, UpdatedBy are set automatically by AuditInterceptor
             var groupPermission = new AppGroupPermission
             {
                 GroupId = groupId,
                 PermissionId = permissionId,
                 IsGranted = isGranted,
-                Priority = priority,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                Priority = priority
             };
 
             _context.GroupPermissions.Add(groupPermission);
@@ -271,19 +268,18 @@ public class AppPermissionService : IAppPermissionService
         {
             existingPermission.IsGranted = isGranted;
             existingPermission.Priority = priority;
-            existingPermission.UpdatedAt = DateTime.UtcNow;
+            // Note: UpdatedAt, UpdatedBy are set automatically by AuditInterceptor
         }
         else
         {
+            // Note: CreatedAt, UpdatedAt, CreatedBy, UpdatedBy are set automatically by AuditInterceptor
             var modelPermission = new AppModelPermission
             {
                 UserId = userId,
                 PermissionId = permissionId,
                 ModelType = modelType,
                 IsGranted = isGranted,
-                Priority = priority,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                Priority = priority
             };
 
             _context.ModelPermissions.Add(modelPermission);
@@ -302,17 +298,18 @@ public class AppPermissionService : IAppPermissionService
     public async Task<bool> GrantObjectPermissionAsync(Guid userId, Guid permissionId, Guid objectId, string objectType, bool isGranted = true, int priority = 200)
     {
         var existingPermission = await _context.ObjectPermissions
-            .FirstOrDefaultAsync(op => op.UserId == userId && op.PermissionId == permissionId && 
+            .FirstOrDefaultAsync(op => op.UserId == userId && op.PermissionId == permissionId &&
                                      op.ObjectId == objectId && op.ObjectType == objectType);
 
         if (existingPermission != null)
         {
             existingPermission.IsGranted = isGranted;
             existingPermission.Priority = priority;
-            existingPermission.UpdatedAt = DateTime.UtcNow;
+            // Note: UpdatedAt, UpdatedBy are set automatically by AuditInterceptor
         }
         else
         {
+            // Note: CreatedAt, UpdatedAt, CreatedBy, UpdatedBy are set automatically by AuditInterceptor
             var objectPermission = new AppObjectPermission
             {
                 UserId = userId,
@@ -320,9 +317,7 @@ public class AppPermissionService : IAppPermissionService
                 ObjectId = objectId,
                 ObjectType = objectType,
                 IsGranted = isGranted,
-                Priority = priority,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                Priority = priority
             };
 
             _context.ObjectPermissions.Add(objectPermission);

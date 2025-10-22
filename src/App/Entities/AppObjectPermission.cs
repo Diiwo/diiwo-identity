@@ -1,22 +1,17 @@
 using System.ComponentModel.DataAnnotations;
+using Diiwo.Core.Domain.Entities;
 
 namespace Diiwo.Identity.App.Entities;
 
 /// <summary>
 ///  Level 5: Object-level permissions (Priority 200 - Lowest)
 /// </summary>
-public class AppObjectPermission
+public class AppObjectPermission : DomainEntity
 {
     public AppObjectPermission()
     {
-        Id = Guid.NewGuid();
-        CreatedAt = DateTime.UtcNow;
-        UpdatedAt = DateTime.UtcNow;
         Priority = 200;
     }
-
-    [Key]
-    public Guid Id { get; set; }
 
     public Guid UserId { get; set; }
 
@@ -32,11 +27,7 @@ public class AppObjectPermission
 
     public int Priority { get; set; } = 200;
 
-    // Audit fields
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
-    public Guid? CreatedBy { get; set; }
-    public Guid? UpdatedBy { get; set; }
+    // Note: Audit fields (CreatedAt, UpdatedAt, CreatedBy, UpdatedBy) and IsActive come from DomainEntity
 
     // Navigation properties
     public virtual AppUser User { get; set; } = null!;

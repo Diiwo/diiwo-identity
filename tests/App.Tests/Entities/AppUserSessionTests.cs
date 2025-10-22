@@ -103,7 +103,7 @@ public class AppUserSessionTests
         var session = new AppUserSession
         {
             SessionToken = "test-token",
-            IsActive = true,
+            State = Diiwo.Core.Domain.Enums.EntityState.Active,
             ExpiresAt = DateTime.UtcNow.AddHours(1)
         };
 
@@ -129,7 +129,7 @@ public class AppUserSessionTests
         var session = new AppUserSession
         {
             SessionToken = "test-token",
-            IsActive = false,
+            State = Diiwo.Core.Domain.Enums.EntityState.Inactive,
             ExpiresAt = DateTime.UtcNow.AddHours(1)
         };
 
@@ -155,7 +155,7 @@ public class AppUserSessionTests
         var session = new AppUserSession
         {
             SessionToken = "test-token",
-            IsActive = true,
+            State = Diiwo.Core.Domain.Enums.EntityState.Active,
             ExpiresAt = DateTime.UtcNow.AddHours(-1)
         };
 

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Diiwo.Core.Domain.Entities;
 
 namespace Diiwo.Identity.App.Entities;
@@ -9,7 +10,7 @@ namespace Diiwo.Identity.App.Entities;
 /// Independent implementation that doesn't require ASP.NET Core Identity
 /// Optimized for simplicity and direct database access
 /// </summary>
-public class AppUser : UserTrackedEntity
+public class AppUser : DomainEntity
 {
     [Required]
     [StringLength(150)]
@@ -48,7 +49,6 @@ public class AppUser : UserTrackedEntity
 
     public int FailedLoginAttempts { get; set; } = 0;
 
-    public DateTime? LockedUntil { get; set; }
 
     public string? EmailConfirmationToken { get; set; }
 
@@ -69,20 +69,19 @@ public class AppUser : UserTrackedEntity
     /// <summary>
     /// Get user's full name
     /// </summary>
+    [NotMapped]
     public string FullName => $"{FirstName} {LastName}".Trim();
 
     /// <summary>
     /// Get user's display name (full name or email)
     /// </summary>
+    [NotMapped]
     public string DisplayName => !string.IsNullOrEmpty(FullName) ? FullName : Email;
 
     /// <summary>
-    /// Check if user account is locked (combined with Core's IsLocked property)
+    /// Check if user can login (active and email confirmed)
     /// </summary>
-    public bool IsAccountLocked => IsLocked || (LockedUntil.HasValue && LockedUntil > DateTime.UtcNow);
+    [NotMapped]
+    public bool CanLogin => IsActive && EmailConfirmed;
 
-    /// <summary>
-    /// Check if user can login (uses Core's IsActive property)
-    /// </summary>
-    public bool CanLogin => IsActive && !IsAccountLocked && EmailConfirmed;
 }

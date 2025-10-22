@@ -111,7 +111,7 @@ public class IdentityUserSessionTests
         {
             UserId = userId,
             SessionToken = "active-session",
-            IsActive = true
+            State = Diiwo.Core.Domain.Enums.EntityState.Active
         };
         Assert.IsTrue(activeSession.IsActive, "Session without expiry should be active");
 
@@ -120,7 +120,7 @@ public class IdentityUserSessionTests
         {
             UserId = userId,
             SessionToken = "future-expiry-session",
-            IsActive = true,
+            State = Diiwo.Core.Domain.Enums.EntityState.Active,
             ExpiresAt = DateTime.UtcNow.AddHours(1)
         };
         Assert.IsTrue(futureExpirySession.IsActive, "Session with future expiry should be active");
@@ -130,7 +130,7 @@ public class IdentityUserSessionTests
         {
             UserId = userId,
             SessionToken = "inactive-session",
-            IsActive = false
+            State = Diiwo.Core.Domain.Enums.EntityState.Inactive
         };
         Assert.IsFalse(inactiveSession.IsActive, "Explicitly inactive session should be inactive");
     }

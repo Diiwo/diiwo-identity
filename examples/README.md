@@ -1,15 +1,88 @@
-# 🚀 Permission System Examples
+# 🚀 DIIWO Identity Solution - Examples
 
-Complete examples for using the DIIWO Identity permission system with automatic generation from entity attributes.
+Complete examples demonstrating the enterprise features, automatic audit trail capabilities, and permission system of the DIIWO Identity Solution.
 
 ## 📋 Table of Contents
 
-- [Quick Start - Simplified Workflow](#-quick-start---simplified-workflow)
-- [Advanced Workflow - Migrations](#-advanced-workflow---migrations)
-- [Permission Attributes](#-permission-attributes)
-- [Medical System Example](#-medical-system-example)
-- [Configuration Examples](#-configuration-examples)
-- [Best Practices](#-best-practices)
+- [🔍 Audit Trail Examples](#-audit-trail-examples)
+- [🚀 Permission System Examples](#-permission-system-examples)
+- [⚡ Quick Start - Simplified Workflow](#-quick-start---simplified-workflow)
+- [🔧 Advanced Workflow - Migrations](#-advanced-workflow---migrations)
+- [🏷️ Permission Attributes](#-permission-attributes)
+- [🏥 Medical System Example](#-medical-system-example)
+- [⚙️ Configuration Examples](#-configuration-examples)
+- [🎯 Best Practices](#-best-practices)
+
+## 🔍 Audit Trail Examples
+
+The examples showcase how the solution automatically tracks all entity changes using the **AuditInterceptor** from **Diiwo.Core**, providing enterprise-grade audit trails without any manual coding.
+
+### Key Features Demonstrated
+
+- ✅ **Automatic Audit Fields**: `CreatedAt`, `UpdatedAt`, `CreatedBy`, `UpdatedBy`
+- ✅ **Soft Delete Support**: Entities are marked as `Terminated` instead of hard deletion
+- ✅ **Entity State Management**: Track entity lifecycle with `EntityState` enum
+- ✅ **Multi-Level Permission System**: 5-level permission hierarchy with audit trail
+- ✅ **Session Management**: Complete session lifecycle tracking
+- ✅ **Login History**: Comprehensive authentication attempt logging
+- ✅ **Role & Group Management**: Enterprise user organization with audit
+
+### Available Examples
+
+#### 1. App Architecture Examples (`AuditTrailExample.cs`)
+
+Demonstrates the **App Architecture** (standalone implementation):
+
+- **User Lifecycle**: Create, update, soft delete with automatic audit trail
+- **Permission Management**: 5-level permission system with full audit tracking
+- **Session Management**: Session creation, validation, and revocation tracking
+- **Login History**: Authentication attempt logging with comprehensive audit trail
+- **Group Management**: User group assignment and permission inheritance
+
+**Run Example**:
+```bash
+cd examples
+dotnet run AuditTrailExample.cs
+```
+
+#### 2. AspNet Architecture Examples (`AspNetAuditTrailExample.cs`)
+
+Demonstrates the **AspNet Architecture** (enterprise features with ASP.NET Core Identity):
+
+- **ASP.NET Identity Integration**: User management with enterprise audit trail
+- **Enterprise Permissions**: Advanced permission system with Identity framework
+- **Role-Based Access Control**: ASP.NET Core roles with audit tracking
+- **Multi-Level Evaluation**: Complex permission hierarchy evaluation
+- **Enterprise Session Management**: Advanced session tracking for enterprise environments
+
+**Run Example**:
+```bash
+cd examples
+dotnet run AspNetAuditTrailExample.cs
+```
+
+### Sample Audit Trail Output
+
+```
+🔍 DIIWO Identity Solution - Audit Trail Capabilities Demo
+================================================================
+
+=== User Lifecycle Audit Trail Example ===
+User created - ID: 12345678-1234-1234-1234-123456789012
+  CreatedAt: 2024-01-15T10:30:45.123Z
+  UpdatedAt: 2024-01-15T10:30:45.123Z
+  CreatedBy: System
+  UpdatedBy: System
+  State: Active
+
+User updated - ID: 12345678-1234-1234-1234-123456789012
+  CreatedAt: 2024-01-15T10:30:45.123Z (unchanged)
+  UpdatedAt: 2024-01-15T10:30:47.456Z (automatically updated)
+  CreatedBy: System (unchanged)
+  UpdatedBy: System (automatically updated)
+```
+
+## 🚀 Permission System Examples
 
 ## ⚡ Quick Start - Simplified Workflow
 

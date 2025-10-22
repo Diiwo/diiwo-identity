@@ -107,8 +107,8 @@ public class AspNetPermissionServiceTests
 
         // Debug: Check if permission lookup is working
         var foundPermission = await _context.IdentityPermissions
-            .FirstOrDefaultAsync(p => p.Resource == "Documents" && p.Action == "Read" && p.IsActive);
-        Assert.IsNotNull(foundPermission, "Permission should be found with IsActive filter");
+            .FirstOrDefaultAsync(p => p.Resource == "Documents" && p.Action == "Read" && p.State == Diiwo.Core.Domain.Enums.EntityState.Active);
+        Assert.IsNotNull(foundPermission, "Permission should be found with State filter");
 
         // Debug: Check direct query for user permission with all filters
         var directUserPermission = await _context.IdentityUserPermissions
@@ -116,7 +116,7 @@ public class AspNetPermissionServiceTests
             .FirstOrDefaultAsync(up => up.UserId == user.Id &&
                                      up.Permission.Resource == "Documents" &&
                                      up.Permission.Action == "Read" &&
-                                     up.Permission.IsActive);
+                                     up.Permission.State == Diiwo.Core.Domain.Enums.EntityState.Active);
         Assert.IsNotNull(directUserPermission, "Direct user permission query should find the permission");
 
         // Act

@@ -7,7 +7,7 @@ namespace Diiwo.Identity.App.Entities;
 /// APP ARCHITECTURE - Simple role entity
 /// Basic role definition for simple projects
 /// </summary>
-public class AppRole : UserTrackedEntity
+public class AppRole : DomainEntity
 {
     [Required]
     [StringLength(100)]

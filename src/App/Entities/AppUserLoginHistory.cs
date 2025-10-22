@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Diiwo.Core.Domain.Entities;
 using Diiwo.Identity.Shared.Enums;
 
 namespace Diiwo.Identity.App.Entities;
@@ -7,20 +8,11 @@ namespace Diiwo.Identity.App.Entities;
 /// APP ARCHITECTURE - Login history tracking
 /// Tracks all login attempts for security audit
 /// </summary>
-public class AppUserLoginHistory
+public class AppUserLoginHistory : DomainEntity
 {
     public AppUserLoginHistory()
     {
-        Id = Guid.NewGuid();
-        CreatedAt = DateTime.UtcNow;
-        UpdatedAt = DateTime.UtcNow;
     }
-
-    /// <summary>
-    /// Unique identifier for the login history record
-    /// </summary>
-    [Key]
-    public Guid Id { get; set; }
 
     /// <summary>
     /// Foreign key to the user who attempted to login
@@ -57,25 +49,7 @@ public class AppUserLoginHistory
     /// </summary>
     public DateTime LoginAttemptAt { get; set; } = DateTime.UtcNow;
 
-    /// <summary>
-    /// When the login history record was created
-    /// </summary>
-    public DateTime CreatedAt { get; set; }
-    
-    /// <summary>
-    /// When the login history record was last updated
-    /// </summary>
-    public DateTime UpdatedAt { get; set; }
-    
-    /// <summary>
-    /// Who created this login history record
-    /// </summary>
-    public Guid? CreatedBy { get; set; }
-    
-    /// <summary>
-    /// Who last updated this login history record
-    /// </summary>
-    public Guid? UpdatedBy { get; set; }
+    // Note: Audit fields (CreatedAt, UpdatedAt, CreatedBy, UpdatedBy) and IsActive come from DomainEntity
 
     /// <summary>
     /// Navigation property to the user who made the login attempt

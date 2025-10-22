@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Diiwo.Core.Domain.Entities;
 using Diiwo.Identity.Shared.Enums;
 
@@ -9,7 +10,7 @@ namespace Diiwo.Identity.App.Entities;
 /// Defines what actions can be performed on what resources
 /// Part of the 5-level permission system
 /// </summary>
-public class AppPermission : UserTrackedEntity
+public class AppPermission : DomainEntity
 {
     [Required]
     [StringLength(100)]
@@ -30,7 +31,7 @@ public class AppPermission : UserTrackedEntity
     /// </summary>
     public int Priority { get; set; } = 0;
 
-    // Note: IsActive, CreatedAt, UpdatedAt, CreatedBy, UpdatedBy now come from UserTrackedEntity
+    // Note: IsActive, CreatedAt, UpdatedAt, CreatedBy, UpdatedBy now come from DomainEntity
 
     // Navigation properties for 5-level permission system
     public virtual ICollection<AppRolePermission> RolePermissions { get; set; } = new List<AppRolePermission>();
@@ -42,6 +43,7 @@ public class AppPermission : UserTrackedEntity
     /// <summary>
     /// Get permission name in format: Resource.Action
     /// </summary>
+    [NotMapped]
     public string Name => $"{Resource}.{Action}";
 
     /// <summary>

@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using Diiwo.Core.Domain.Interfaces;
+using Diiwo.Core.Domain.Enums;
 
 namespace Diiwo.Identity.AspNet.Entities;
 
@@ -7,7 +9,7 @@ namespace Diiwo.Identity.AspNet.Entities;
 /// Enterprise version of role-based permission assignments
 /// Highest priority in the 5-level permission hierarchy
 /// </summary>
-public class IdentityRolePermission
+public class IdentityRolePermission : IDomainEntity
 {
     public IdentityRolePermission()
     {
@@ -15,6 +17,7 @@ public class IdentityRolePermission
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
         Priority = 0; // Highest priority
+        State = EntityState.Active;
     }
 
     /// <summary>
@@ -43,25 +46,12 @@ public class IdentityRolePermission
     /// </summary>
     public int Priority { get; set; } = 0;
 
-    /// <summary>
-    /// When the permission assignment was created
-    /// </summary>
+    // IUserTracked implementation - allows automatic audit via AuditInterceptor
     public DateTime CreatedAt { get; set; }
-    
-    /// <summary>
-    /// When the permission assignment was last updated
-    /// </summary>
     public DateTime UpdatedAt { get; set; }
-    
-    /// <summary>
-    /// Who created this permission assignment
-    /// </summary>
     public Guid? CreatedBy { get; set; }
-    
-    /// <summary>
-    /// Who last updated this permission assignment
-    /// </summary>
     public Guid? UpdatedBy { get; set; }
+    public EntityState State { get; set; } = EntityState.Active;
 
     /// <summary>
     /// Navigation property to the associated role
@@ -72,4 +62,22 @@ public class IdentityRolePermission
     /// Navigation property to the associated permission
     /// </summary>
     public virtual IdentityPermission Permission { get; set; } = null!;
+
+    /// <summary>
+    /// IDomainEntity implementation - Soft delete the entity
+    /// </summary>
+    public void SoftDelete()
+    {
+        State = EntityState.Terminated;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// IDomainEntity implementation - Restore a soft-deleted entity
+    /// </summary>
+    public void Restore()
+    {
+        State = EntityState.Active;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }

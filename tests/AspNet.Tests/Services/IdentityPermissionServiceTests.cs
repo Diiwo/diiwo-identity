@@ -89,6 +89,10 @@ public class IdentityPermissionServiceTests
 
         await _context.SaveChangesAsync();
 
+        // Setup mock UserManager to return the user
+        _mockUserManager.Setup(um => um.FindByIdAsync(user.Id.ToString()))
+            .ReturnsAsync(user);
+
         // Act
         var result = await _permissionService.UserHasPermissionAsync(user.Id, "SharedResource.SharedAction");
 
@@ -174,6 +178,9 @@ public class IdentityPermissionServiceTests
 
         await _context.SaveChangesAsync();
 
+        _mockUserManager.Setup(um => um.FindByIdAsync(user.Id.ToString())).ReturnsAsync(user);
+        _mockUserManager.Setup(um => um.GetRolesAsync(user)).ReturnsAsync(new List<string> { role.Name! });
+
         // Act
         var result = await _permissionService.UserHasPermissionAsync(user.Id, "SharedRoleResource.SharedRoleAction");
 
@@ -200,6 +207,8 @@ public class IdentityPermissionServiceTests
         };
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
+
+        _mockUserManager.Setup(um => um.FindByIdAsync(user.Id.ToString())).ReturnsAsync(user);
 
         // Act
         var result = await _permissionService.UserExistsAsync(user.Id);
@@ -314,6 +323,8 @@ public class IdentityPermissionServiceTests
 
         await _context.SaveChangesAsync();
 
+        _mockUserManager.Setup(um => um.FindByIdAsync(user.Id.ToString())).ReturnsAsync(user);
+
         // Act
         var hasPermission = await _permissionService.UserHasPermissionAsync(user.Id, "CrossResource.CrossAction");
         var userExists = await _permissionService.UserExistsAsync(user.Id);
@@ -369,6 +380,8 @@ public class IdentityPermissionServiceTests
         _context.IdentityUserPermissions.AddRange(userPerm1, userPerm3);
 
         await _context.SaveChangesAsync();
+
+        _mockUserManager.Setup(um => um.FindByIdAsync(user.Id.ToString())).ReturnsAsync(user);
 
         // Act
         var result1 = await _permissionService.UserHasPermissionAsync(user.Id, "Resource1.Action1");

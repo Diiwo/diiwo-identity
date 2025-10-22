@@ -1,4 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Diiwo.Core.Domain.Interfaces;
+using Diiwo.Core.Domain.Enums;
 using Diiwo.Identity.Shared.Enums;
 
 namespace Diiwo.Identity.AspNet.Entities;
@@ -8,13 +11,14 @@ namespace Diiwo.Identity.AspNet.Entities;
 /// Defines what actions can be performed on what resources
 /// Part of the 5-level permission system with enterprise features
 /// </summary>
-public class IdentityPermission
+public class IdentityPermission : IDomainEntity
 {
     public IdentityPermission()
     {
         Id = Guid.NewGuid();
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
+        State = EntityState.Active;
     }
 
     /// <summary>
@@ -55,33 +59,25 @@ public class IdentityPermission
     public int Priority { get; set; } = 0;
 
     /// <summary>
+    /// Current state of the permission (Active, Inactive, Terminated)
+    /// </summary>
+    public EntityState State { get; set; } = EntityState.Active;
+
+    /// <summary>
     /// Whether the permission is currently active and can be granted
     /// </summary>
-    public bool IsActive { get; set; } = true;
+    [NotMapped]
+    public bool IsActive => State == EntityState.Active;
 
     /// <summary>
     /// Optional foreign key to corresponding App architecture permission for migration scenarios
     /// </summary>
     public Guid? AppPermissionId { get; set; }
 
-    /// <summary>
-    /// When the permission was created
-    /// </summary>
+    // IUserTracked implementation - allows automatic audit via AuditInterceptor
     public DateTime CreatedAt { get; set; }
-    
-    /// <summary>
-    /// When the permission was last updated
-    /// </summary>
     public DateTime UpdatedAt { get; set; }
-    
-    /// <summary>
-    /// Who created this permission
-    /// </summary>
     public Guid? CreatedBy { get; set; }
-    
-    /// <summary>
-    /// Who last updated this permission
-    /// </summary>
     public Guid? UpdatedBy { get; set; }
 
     /// <summary>
@@ -112,6 +108,7 @@ public class IdentityPermission
     /// <summary>
     /// Get permission name in format: Resource.Action
     /// </summary>
+    [NotMapped]
     public string Name => $"{Resource}.{Action}";
 
     /// <summary>
@@ -120,5 +117,23 @@ public class IdentityPermission
     public bool Matches(string permissionName)
     {
         return string.Equals(Name, permissionName, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// IDomainEntity implementation - Soft delete the entity
+    /// </summary>
+    public void SoftDelete()
+    {
+        State = EntityState.Terminated;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// IDomainEntity implementation - Restore a soft-deleted entity
+    /// </summary>
+    public void Restore()
+    {
+        State = EntityState.Active;
+        UpdatedAt = DateTime.UtcNow;
     }
 }

@@ -262,7 +262,7 @@ public class AppUserServiceTests
         {
             UserId = user.Id,
             SessionToken = "valid-token",
-            IsActive = true,
+            State = Diiwo.Core.Domain.Enums.EntityState.Active,
             ExpiresAt = DateTime.UtcNow.AddHours(1)
         };
         _context.UserSessions.Add(session);
@@ -290,7 +290,7 @@ public class AppUserServiceTests
         {
             UserId = user.Id,
             SessionToken = "expired-token",
-            IsActive = true,
+            State = Diiwo.Core.Domain.Enums.EntityState.Active,
             ExpiresAt = DateTime.UtcNow.AddHours(-1)
         };
         _context.UserSessions.Add(session);

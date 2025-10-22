@@ -444,7 +444,7 @@ public class AppToAspNetMigrationService : IAppToAspNetMigrationService
                     IpAddress = appUserSession.IpAddress,
                     UserAgent = appUserSession.UserAgent,
                     SessionType = appUserSession.SessionType,
-                    IsActive = appUserSession.IsActive,
+                    State = appUserSession.State,
                     ExpiresAt = appUserSession.ExpiresAt,
                     CreatedAt = appUserSession.CreatedAt,
                     UpdatedAt = appUserSession.UpdatedAt

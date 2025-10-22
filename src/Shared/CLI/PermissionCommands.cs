@@ -80,7 +80,7 @@ public static class PermissionCommands
     /// </summary>
     public static void ShowHelp()
     {
-        Console.WriteLine("🔐 Diiwo Identity - Permission Management Commands");
+        Console.WriteLine("🔐 DIIWO Identity - Permission Management Commands");
         Console.WriteLine("==============================================");
         Console.WriteLine();
         Console.WriteLine("🚀 RECOMMENDED - Simple Workflow:");

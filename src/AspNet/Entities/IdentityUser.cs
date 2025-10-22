@@ -1,26 +1,38 @@
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Diiwo.Core.Domain.Interfaces;
+using Diiwo.Core.Domain.Enums;
 
 namespace Diiwo.Identity.AspNet.Entities;
 
 /// <summary>
 /// ASPNET ARCHITECTURE - Enterprise user entity that extends IdentityUser
 /// Combines ASP.NET Core Identity with enterprise functionality
+/// Implements IDomainEntity for consistency with App architecture
 /// </summary>
-public class IdentityUser : IdentityUser<Guid>
+public class IdentityUser : IdentityUser<Guid>, IDomainEntity
 {
     public IdentityUser()
     {
         Id = Guid.NewGuid();
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
+        State = EntityState.Active;
     }
 
-    // Enterprise audit properties
+    // IUserTracked implementation - allows automatic audit via AuditInterceptor
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public Guid? CreatedBy { get; set; }
     public Guid? UpdatedBy { get; set; }
+    public EntityState State { get; set; } = EntityState.Active;
+
+    /// <summary>
+    /// Whether the user is active (not soft deleted)
+    /// </summary>
+    [NotMapped]
+    public bool IsActive => State == EntityState.Active;
 
     // Enhanced user properties
     [StringLength(50)]
@@ -55,17 +67,20 @@ public class IdentityUser : IdentityUser<Guid>
     /// <summary>
     /// Get user's full name
     /// </summary>
+    [NotMapped]
     public string FullName => $"{FirstName} {LastName}".Trim();
 
     /// <summary>
     /// Get user's display name (full name or email)
     /// </summary>
+    [NotMapped]
     public string DisplayName => !string.IsNullOrEmpty(FullName) ? FullName : Email ?? UserName ?? "Unknown";
 
     /// <summary>
     /// Check if user can login (combines Identity + enterprise checks)
     /// </summary>
-    public bool CanLogin => !LockoutEnabled && EmailConfirmed;
+    [NotMapped]
+    public bool CanLogin => !LockoutEnabled && EmailConfirmed && IsActive;
 
     /// <summary>
     /// Record successful login with enterprise tracking
@@ -75,6 +90,24 @@ public class IdentityUser : IdentityUser<Guid>
         LastLoginAt = DateTime.UtcNow;
         LastLoginIp = ipAddress;
         AccessFailedCount = 0; // Reset Identity failed count
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// IDomainEntity implementation - Soft delete the entity
+    /// </summary>
+    public void SoftDelete()
+    {
+        State = EntityState.Terminated;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// IDomainEntity implementation - Restore a soft-deleted entity
+    /// </summary>
+    public void Restore()
+    {
+        State = EntityState.Active;
         UpdatedAt = DateTime.UtcNow;
     }
 }

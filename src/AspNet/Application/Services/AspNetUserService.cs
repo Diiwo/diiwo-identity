@@ -4,6 +4,7 @@ using Diiwo.Identity.AspNet.DbContext;
 using Diiwo.Identity.AspNet.Entities;
 using Diiwo.Identity.AspNet.Abstractions.Services;
 using Diiwo.Identity.Shared.Enums;
+using DomainEntityState = Diiwo.Core.Domain.Enums.EntityState;
 
 namespace Diiwo.Identity.AspNet.Application.Services;
 
@@ -63,15 +64,14 @@ public class AspNetUserService : IAspNetUserService
     /// <inheritdoc />
     public async Task<Microsoft.AspNetCore.Identity.IdentityResult> CreateUserAsync(string email, string password, string? firstName = null, string? lastName = null, string? userName = null)
     {
+        // Note: CreatedAt, UpdatedAt, CreatedBy, UpdatedBy are set automatically by AuditInterceptor
         var user = new IdentityUser
         {
             Email = email,
             UserName = userName ?? email,
             EmailConfirmed = false,
             FirstName = firstName,
-            LastName = lastName,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            LastName = lastName
         };
 
         var result = await _userManager.CreateAsync(user, password);
@@ -91,7 +91,7 @@ public class AspNetUserService : IAspNetUserService
     /// <inheritdoc />
     public async Task<Microsoft.AspNetCore.Identity.IdentityResult> UpdateUserAsync(IdentityUser user)
     {
-        user.UpdatedAt = DateTime.UtcNow;
+        // Note: UpdatedAt and UpdatedBy are set automatically by AuditInterceptor
         var result = await _userManager.UpdateAsync(user);
         
         if (result.Succeeded)
@@ -145,7 +145,7 @@ public class AspNetUserService : IAspNetUserService
         if (result.Succeeded)
         {
             user.LastLoginAt = DateTime.UtcNow;
-            user.UpdatedAt = DateTime.UtcNow;
+            // Note: UpdatedAt and UpdatedBy are set automatically by AuditInterceptor
             await _userManager.UpdateAsync(user);
         }
 
@@ -287,6 +287,7 @@ public class AspNetUserService : IAspNetUserService
     /// <inheritdoc />
     public async Task<IdentityUserSession> CreateSessionAsync(Guid userId, string sessionToken, string? ipAddress = null, string? userAgent = null, SessionType sessionType = SessionType.Web)
     {
+        // Note: CreatedAt, UpdatedAt, CreatedBy, UpdatedBy are set automatically by AuditInterceptor
         var session = new IdentityUserSession
         {
             UserId = userId,
@@ -294,9 +295,7 @@ public class AspNetUserService : IAspNetUserService
             IpAddress = ipAddress,
             UserAgent = userAgent,
             SessionType = sessionType,
-            ExpiresAt = DateTime.UtcNow.AddDays(30), // 30 days default
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            ExpiresAt = DateTime.UtcNow.AddDays(30) // 30 days default
         };
 
         _context.IdentityUserSessions.Add(session);
@@ -309,10 +308,10 @@ public class AspNetUserService : IAspNetUserService
     public async Task<bool> ValidateSessionAsync(string sessionToken)
     {
         var session = await _context.IdentityUserSessions
-            .FirstOrDefaultAsync(s => s.SessionToken == sessionToken && 
-                                    s.IsActive && 
+            .FirstOrDefaultAsync(s => s.SessionToken == sessionToken &&
+                                    s.State == DomainEntityState.Active &&
                                     s.ExpiresAt > DateTime.UtcNow);
-        
+
         return session != null;
     }
 
@@ -324,8 +323,8 @@ public class AspNetUserService : IAspNetUserService
         
         if (session == null) return false;
 
-        session.IsActive = false;
-        session.UpdatedAt = DateTime.UtcNow;
+        session.State = DomainEntityState.Inactive;
+        // Note: UpdatedAt and UpdatedBy are set automatically by AuditInterceptor
 
         await _context.SaveChangesAsync();
         return true;
@@ -335,13 +334,13 @@ public class AspNetUserService : IAspNetUserService
     public async Task RevokeAllIdentityUserSessionsAsync(Guid userId)
     {
         var sessions = await _context.IdentityUserSessions
-            .Where(s => s.UserId == userId && s.IsActive)
+            .Where(s => s.UserId == userId && s.State == DomainEntityState.Active)
             .ToListAsync();
 
         foreach (var session in sessions)
         {
-            session.IsActive = false;
-            session.UpdatedAt = DateTime.UtcNow;
+            session.State = DomainEntityState.Inactive;
+            // Note: UpdatedAt and UpdatedBy are set automatically by AuditInterceptor
         }
 
         await _context.SaveChangesAsync();
@@ -353,6 +352,7 @@ public class AspNetUserService : IAspNetUserService
     /// <inheritdoc />
     public async Task LogLoginAttemptAsync(Guid userId, bool isSuccessful, string? ipAddress = null, string? userAgent = null, string? failureReason = null, AuthMethod authMethod = AuthMethod.Password)
     {
+        // Note: CreatedAt, UpdatedAt, CreatedBy, UpdatedBy are set automatically by AuditInterceptor
         var loginHistory = new IdentityLoginHistory
         {
             UserId = userId,
@@ -361,9 +361,7 @@ public class AspNetUserService : IAspNetUserService
             UserAgent = userAgent,
             FailureReason = failureReason,
             AuthMethod = authMethod,
-            LoginAttemptAt = DateTime.UtcNow,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            LoginAttemptAt = DateTime.UtcNow
         };
 
         _context.IdentityLoginHistory.Add(loginHistory);

@@ -40,23 +40,6 @@ public static class AspNetEnums
         Blocked = 2
     }
 
-    /// <summary>
-    /// User lock states for AspNet Identity integration
-    /// </summary>
-    public enum UserLockState
-    {
-        [Description("User is unlocked")]
-        Unlocked = 0,
-
-        [Description("User is temporarily locked")]
-        TemporaryLock = 1,
-
-        [Description("User is permanently locked")]
-        PermanentLock = 2,
-
-        [Description("User is suspended")]
-        Suspended = 3
-    }
 
     /// <summary>
     /// Permission grant states for AspNet architecture

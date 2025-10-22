@@ -1,22 +1,18 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Diiwo.Core.Domain.Entities;
 
 namespace Diiwo.Identity.App.Entities;
 
 /// <summary>
 ///  Level 3: User-specific permissions (Priority 100)
 /// </summary>
-public class AppUserPermission
+public class AppUserPermission : DomainEntity
 {
     public AppUserPermission()
     {
-        Id = Guid.NewGuid();
-        CreatedAt = DateTime.UtcNow;
-        UpdatedAt = DateTime.UtcNow;
         Priority = 100;
     }
-
-    [Key]
-    public Guid Id { get; set; }
 
     public Guid UserId { get; set; }
 
@@ -28,11 +24,7 @@ public class AppUserPermission
 
     public DateTime? ExpiresAt { get; set; }
 
-    // Audit fields
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
-    public Guid? CreatedBy { get; set; }
-    public Guid? UpdatedBy { get; set; }
+    // Note: Audit fields (CreatedAt, UpdatedAt, CreatedBy, UpdatedBy) and IsActive come from DomainEntity
 
     // Navigation properties
     public virtual AppUser User { get; set; } = null!;
@@ -41,5 +33,6 @@ public class AppUserPermission
     /// <summary>
     /// Check if permission has expired
     /// </summary>
+    [NotMapped]
     public bool IsExpired => ExpiresAt.HasValue && ExpiresAt <= DateTime.UtcNow;
 }

@@ -88,18 +88,15 @@
 
   <!-- Documentation and Examples (Include as content) -->
   <ItemGroup Label="Documentation">
-    <None Include="README.md" />
-    <None Include="ARCHITECTURE-CHOICE.md" />
-    <None Include="IMPLEMENTATION-GUIDE.md" />
-    <None Include="SOLUTION-SUMMARY.md" />
     <Content Include="Examples\**\*.cs">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <!-- Diiwo.Core Reference - Base entities and universal functionality -->
+  <!-- Changed from ProjectReference to PackageReference for public distribution -->
   <ItemGroup>
-    <ProjectReference Include="..\..\DIIWO-Core\DIIWO.Core.csproj" />
+    <PackageReference Include="Diiwo.Core" Version="0.1.0" />
   </ItemGroup>
 
   <!-- Build Configuration -->

@@ -310,9 +310,7 @@ public static class PermissionGenerationExtensions
                     Description = permissionAttr.Description,
                     Scope = permissionAttr.Scope,
                     Priority = permissionAttr.Priority,
-                    IsActive = true,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    State = Diiwo.Core.Domain.Enums.EntityState.Active
                 };
 
                 context.IdentityPermissions.Add(newPermission);

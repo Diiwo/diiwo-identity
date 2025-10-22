@@ -65,14 +65,13 @@ public class AppUserService : IAppUserService
     /// <inheritdoc />
     public async Task<AppUser> CreateUserAsync(string email, string passwordHash, string? firstName = null, string? lastName = null)
     {
+        // Note: CreatedAt, UpdatedAt, CreatedBy, UpdatedBy are set automatically by AuditInterceptor
         var user = new AppUser
         {
             Email = email.ToLower(),
             PasswordHash = passwordHash,
             FirstName = firstName,
-            LastName = lastName,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            LastName = lastName
         };
 
         _context.Users.Add(user);
@@ -87,7 +86,7 @@ public class AppUserService : IAppUserService
     {
         try
         {
-            user.UpdatedAt = DateTime.UtcNow;
+            // Note: UpdatedAt and UpdatedBy are set automatically by AuditInterceptor
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
             
@@ -141,7 +140,7 @@ public class AppUserService : IAppUserService
             return false;
 
         user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
-        user.UpdatedAt = DateTime.UtcNow;
+        // Note: UpdatedAt and UpdatedBy are set automatically by AuditInterceptor
 
         await _context.SaveChangesAsync();
         
@@ -158,7 +157,7 @@ public class AppUserService : IAppUserService
 
         user.EmailConfirmed = true;
         user.EmailConfirmationToken = null;
-        user.UpdatedAt = DateTime.UtcNow;
+        // Note: UpdatedAt and UpdatedBy are set automatically by AuditInterceptor
 
         await _context.SaveChangesAsync();
         
@@ -174,7 +173,7 @@ public class AppUserService : IAppUserService
 
         var token = Guid.NewGuid().ToString();
         user.EmailConfirmationToken = token;
-        user.UpdatedAt = DateTime.UtcNow;
+        // Note: UpdatedAt and UpdatedBy are set automatically by AuditInterceptor
 
         await _context.SaveChangesAsync();
         return token;
@@ -190,7 +189,7 @@ public class AppUserService : IAppUserService
         var token = Guid.NewGuid().ToString();
         user.PasswordResetToken = token;
         user.PasswordResetTokenExpires = DateTime.UtcNow.AddHours(1);
-        user.UpdatedAt = DateTime.UtcNow;
+        // Note: UpdatedAt and UpdatedBy are set automatically by AuditInterceptor
 
         await _context.SaveChangesAsync();
         
@@ -210,7 +209,7 @@ public class AppUserService : IAppUserService
         user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
         user.PasswordResetToken = null;
         user.PasswordResetTokenExpires = null;
-        user.UpdatedAt = DateTime.UtcNow;
+        // Note: UpdatedAt and UpdatedBy are set automatically by AuditInterceptor
 
         await _context.SaveChangesAsync();
         
@@ -222,6 +221,7 @@ public class AppUserService : IAppUserService
     /// <inheritdoc />
     public async Task<AppUserSession> CreateSessionAsync(Guid userId, string sessionToken, string? ipAddress = null, string? userAgent = null, SessionType sessionType = SessionType.Web)
     {
+        // Note: CreatedAt, UpdatedAt, CreatedBy, UpdatedBy are set automatically by AuditInterceptor
         var session = new AppUserSession
         {
             UserId = userId,
@@ -229,9 +229,7 @@ public class AppUserService : IAppUserService
             IpAddress = ipAddress,
             UserAgent = userAgent,
             SessionType = sessionType,
-            ExpiresAt = DateTime.UtcNow.AddDays(30), // 30 days default
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            ExpiresAt = DateTime.UtcNow.AddDays(30) // 30 days default
         };
 
         _context.UserSessions.Add(session);
@@ -244,10 +242,10 @@ public class AppUserService : IAppUserService
     public async Task<bool> ValidateSessionAsync(string sessionToken)
     {
         var session = await _context.UserSessions
-            .FirstOrDefaultAsync(s => s.SessionToken == sessionToken && 
-                                    s.IsActive && 
+            .FirstOrDefaultAsync(s => s.SessionToken == sessionToken &&
+                                    s.State == Diiwo.Core.Domain.Enums.EntityState.Active &&
                                     s.ExpiresAt > DateTime.UtcNow);
-        
+
         return session != null;
     }
 
@@ -259,8 +257,8 @@ public class AppUserService : IAppUserService
         
         if (session == null) return false;
 
-        session.IsActive = false;
-        session.UpdatedAt = DateTime.UtcNow;
+        session.State = Diiwo.Core.Domain.Enums.EntityState.Inactive;
+        // Note: UpdatedAt and UpdatedBy are set automatically by AuditInterceptor
 
         await _context.SaveChangesAsync();
         return true;
@@ -270,13 +268,13 @@ public class AppUserService : IAppUserService
     public async Task RevokeAllUserSessionsAsync(Guid userId)
     {
         var sessions = await _context.UserSessions
-            .Where(s => s.UserId == userId && s.IsActive)
+            .Where(s => s.UserId == userId && s.State == Diiwo.Core.Domain.Enums.EntityState.Active)
             .ToListAsync();
 
         foreach (var session in sessions)
         {
-            session.IsActive = false;
-            session.UpdatedAt = DateTime.UtcNow;
+            session.State = Diiwo.Core.Domain.Enums.EntityState.Inactive;
+            // Note: UpdatedAt and UpdatedBy are set automatically by AuditInterceptor
         }
 
         await _context.SaveChangesAsync();
@@ -288,6 +286,7 @@ public class AppUserService : IAppUserService
     /// <inheritdoc />
     public async Task LogLoginAttemptAsync(Guid userId, bool isSuccessful, string? ipAddress = null, string? userAgent = null, string? failureReason = null, AuthMethod authMethod = AuthMethod.Password)
     {
+        // Note: CreatedAt, UpdatedAt, CreatedBy, UpdatedBy are set automatically by AuditInterceptor
         var loginHistory = new AppUserLoginHistory
         {
             UserId = userId,
@@ -296,9 +295,7 @@ public class AppUserService : IAppUserService
             UserAgent = userAgent,
             FailureReason = failureReason,
             AuthMethod = authMethod,
-            LoginAttemptAt = DateTime.UtcNow,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            LoginAttemptAt = DateTime.UtcNow
         };
 
         _context.LoginHistory.Add(loginHistory);

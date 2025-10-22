@@ -156,7 +156,7 @@ public class AppIdentityDbContext : Microsoft.EntityFrameworkCore.DbContext
         entity.HasKey(s => s.Id);
         
         entity.HasIndex(s => s.SessionToken).IsUnique();
-        entity.HasIndex(s => new { s.UserId, s.IsActive });
+        entity.HasIndex(s => new { s.UserId, s.State });
         entity.HasIndex(s => s.ExpiresAt);
 
         entity.Property(s => s.SessionToken).IsRequired().HasMaxLength(255);

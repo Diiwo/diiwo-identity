@@ -1,7 +1,6 @@
+using Diiwo.Identity.AspNet.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Diiwo.Identity.AspNet.Entities;
-using Diiwo.Identity.Shared.Enums;
 
 namespace Diiwo.Identity.AspNet.DbContext;
 
@@ -130,7 +129,7 @@ public class AspNetIdentityDbContext : IdentityDbContext<IdentityUser, IdentityR
         entity.HasKey(s => s.Id);
         
         entity.HasIndex(s => s.SessionToken).IsUnique();
-        entity.HasIndex(s => new { s.UserId, s.IsActive });
+        entity.HasIndex(s => new { s.UserId, s.State });
         entity.HasIndex(s => s.ExpiresAt);
 
         entity.Property(s => s.SessionToken).IsRequired().HasMaxLength(255);
