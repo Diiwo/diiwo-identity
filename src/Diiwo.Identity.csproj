@@ -13,6 +13,7 @@
     <PackageTags>diiwo;identity;authentication;users;roles;permissions;app;aspnet;enterprise</PackageTags>
     <RepositoryUrl>https://github.com/diiwo/diiwo-identity</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
       Version 0.1.0 - Initial Release:
       - Complete dual-architecture implementation
@@ -24,6 +25,11 @@
       - Comprehensive documentation and examples
     </PackageReleaseNotes>
   </PropertyGroup>
+
+  <!-- Include README in NuGet package -->
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <!-- NEW DUAL ARCHITECTURE STRUCTURE -->
   <!-- Files are included automatically by .NET SDK -->
