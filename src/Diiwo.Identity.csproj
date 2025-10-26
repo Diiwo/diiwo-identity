@@ -7,7 +7,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageId>Diiwo.Identity</PackageId>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
     <Authors>Joaquin Lugo Zavala</Authors>
     <Description>Dual-architecture user management and authentication library for Diiwo applications. Choose between App (simple) or AspNet (enterprise) architectures.</Description>
     <PackageTags>diiwo;identity;authentication;users;roles;permissions;app;aspnet;enterprise</PackageTags>
@@ -15,10 +15,9 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
-      Version 0.1.1 - Package Metadata Update:
-      - Include README.md in NuGet package for better documentation visibility
-      - Fix GitHub Actions workflow test execution
-      - All features from 0.1.0 remain unchanged
+      Version 0.1.2 - Dependency Update:
+      - Update Diiwo.Core dependency to version 0.2.0
+      - All features from previous versions remain unchanged
     </PackageReleaseNotes>
   </PropertyGroup>
 
@@ -98,7 +97,7 @@
   <!-- Diiwo.Core Reference - Base entities and universal functionality -->
   <!-- Changed from ProjectReference to PackageReference for public distribution -->
   <ItemGroup>
-    <PackageReference Include="Diiwo.Core" Version="0.1.0" />
+    <PackageReference Include="Diiwo.Core" Version="0.2.0" />
   </ItemGroup>
 
   <!-- Build Configuration -->
@@ -121,13 +120,13 @@
     <AssemblyCompany>Joaquin Lugo Zavala (Diiwo Org)</AssemblyCompany>
     <AssemblyProduct>Diiwo.Identity</AssemblyProduct>
     <AssemblyCopyright>Copyright © Joaquin Lugo Zavala 2024-2025</AssemblyCopyright>
-    <AssemblyVersion>0.1.1.0</AssemblyVersion>
-    <FileVersion>0.1.1.0</FileVersion>
+    <AssemblyVersion>0.1.2.0</AssemblyVersion>
+    <FileVersion>0.1.2.0</FileVersion>
   </PropertyGroup>
 
   <!-- Build Targets -->
   <Target Name="PrintArchitectureInfo" BeforeTargets="Build">
-    <Message Text="Building Diiwo.Identity v0.1.1 - Dual Architecture" Importance="high" />
+    <Message Text="Building Diiwo.Identity v0.1.2 - Dual Architecture" Importance="high" />
     <Message Text="   App Architecture: Simple, standalone identity management" Importance="high" />
     <Message Text="   AspNet Architecture: Enterprise with ASP.NET Core Identity" Importance="high" />
     <Message Text="   Choose your architecture in your Program.cs:" Importance="high" />
